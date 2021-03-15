@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { Helmet } from "react-helmet";
 import Block from "./Block";
 import EditorNavbar from "./EditorNavbar";
+import Accordion from "./Accordion";
 
 const Editor: FC = () => {
   return (
@@ -27,6 +28,7 @@ const Editor: FC = () => {
           </h1>
           <p>Prepared for [Add your client name]</p>
           <p>by [Add your name] — [Add your email address]</p>
+          <Accordion></Accordion>
         </Block>
         <Block>
           <h1 style={{ color: "#2980b9" }}>
