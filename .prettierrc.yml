@@ -1,0 +1,4 @@
+# Prettier default config
+trailingComma: "all"
+printWidth: 120
+arrowParens: "always"

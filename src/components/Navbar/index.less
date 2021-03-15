@@ -1,0 +1,109 @@
+.proto-navbar {
+  @navbar-height: 72px;
+
+  display: flex;
+  align-items: center;
+  height: @navbar-height;
+  padding: 0 0 0 @space-l;
+  background-color: white;
+  box-shadow: 0 1px 0 0 @grey25;
+  width: 100%;
+  z-index: 1;
+  position: relative;
+
+  &__details {
+    display: grid;
+    grid-auto-flow: column;
+    align-items: center;
+    gap: @space-m;
+    margin-right: auto;
+  }
+
+  &__logo {
+    @logo-size: 40px;
+
+    display: flex;
+    width: @logo-size;
+    height: @logo-size;
+  }
+
+  &__title {
+    .text-h4;
+    color: @midnight;
+    margin: 0;
+  }
+
+  &__links {
+    margin-left: @space-m;
+    display: grid;
+    grid-auto-flow: column;
+    gap: @space-m;
+    list-style-type: none;
+  }
+
+  &__link {
+    .text-context-label;
+    color: fade(@slate, 75);
+
+    &[aria-current="page"] {
+      color: @slate;
+    }
+  }
+
+  &__actions {
+    display: grid;
+    grid-auto-flow: column;
+    align-items: center;
+    margin-left: auto;
+    padding: @space-m @space-l;
+    align-self: stretch;
+
+    &--space-s {
+      gap: @space-s;
+    }
+
+    &--space-m {
+      gap: @space-m;
+    }
+
+    & + & {
+      border-left: 1px solid @grey25;
+      margin-left: 0;
+    }
+
+    &:last-child {
+      padding-right: @space-s;
+    }
+  }
+
+  &__profile {
+    width: 72px;
+    height: 100%;
+    display: grid;
+    place-content: stretch;
+    border-left: 1px solid @grey25;
+  }
+
+  &__profile-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background @duration-m @bezier-standard, box-shadow @duration-m @bezier-standard;
+
+    &:hover {
+      background: @grey10;
+    }
+
+    &:active {
+      box-shadow: none;
+    }
+
+    &:focus {
+      box-shadow: inset 0 0 0 3px fade(@blue, 50);
+    }
+  }
+}

@@ -1,0 +1,87 @@
+---
+parser: "@typescript-eslint/parser"
+root: true
+parserOptions:
+  project: tsconfig.json
+  sourceType: module
+extends:
+  - plugin:@typescript-eslint/recommended
+  - plugin:prettier/recommended
+  - plugin:react/recommended
+  - prettier
+  - prettier/@typescript-eslint
+  - prettier/react
+  - prettier/standard
+plugins:
+  - "@typescript-eslint"
+  - mocha
+  - react
+  - react-hooks
+settings:
+  react:
+    version: detect
+rules:
+  semi: error
+  triple-equals: off
+  no-empty: warn
+  no-var: warn
+  prefer-const: warn
+  no-unused-expressions: off
+  "@typescript-eslint/no-use-before-define": off
+  "@typescript-eslint/no-var-requires": warn
+  "@typescript-eslint/no-inferrable-types": warn
+  "@typescript-eslint/no-empty-function": warn
+  "@typescript-eslint/no-explicit-any": off
+  "@typescript-eslint/no-unused-expressions": warn
+  "@typescript-eslint/naming-convention":
+    - warn
+    - selector: default
+      format:
+        - camelCase
+        - PascalCase
+      leadingUnderscore: allow
+    - selector: typeLike
+      format:
+        - PascalCase
+    - selector: variable
+      types:
+        - function
+      modifiers:
+        - const
+      format:
+        - PascalCase
+        - camelCase
+    - selector: enumMember
+      format:
+        - PascalCase
+    - selector: property
+      format:
+        - snake_case
+      filter:
+        regex: "^.+_.+$"
+        match: true
+  no-multiple-empty-lines: error
+  arrow-body-style: off
+  sort-keys: off
+  prefer-template: warn
+  max-classes-per-file: off
+  mocha/no-exclusive-tests: error
+  jsx-no-multiline-js: off
+  jsx-no-lambda: off
+  react/jsx-closing-bracket-location: warn
+  react/jsx-closing-tag-location: warn
+  react/no-unescaped-entities: warn
+  react/display-name: warn
+  react/jsx-no-target-blank: warn
+  react/no-find-dom-node: warn
+  react/prop-types: off
+  react/jsx-key: warn
+  react-hooks/rules-of-hooks: error
+  react-hooks/exhaustive-deps: warn
+ignorePatterns:
+  - "webpack.config.js"
+overrides:
+  - files:
+      - "*.spec.ts?"
+    rules:
+      "@typescript-eslint/no-unused-expressions": off

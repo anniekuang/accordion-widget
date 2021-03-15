@@ -1,0 +1,27 @@
+.proto-dashboard-sidebar {
+  display: grid;
+  gap: @space-xl;
+  align-content: start;
+
+  &__section {
+    display: grid;
+    gap: @space-s;
+
+    &--system {
+      padding-left: @space-m;
+    }
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: @space-xl;
+  }
+
+  &__title {
+    .text-context-label;
+    padding-left: @space-m + @space-s;
+    color: @slate;
+  }
+}

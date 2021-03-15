@@ -1,0 +1,32 @@
+.proto-action-bar {
+  display: grid;
+  gap: @space-l;
+  border-bottom: 1px solid @grey25;
+  margin-bottom: @space-l;
+
+  &__row {
+    display: grid;
+    gap: @space-m;
+    grid-auto-flow: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__row-start,
+  &__row-end {
+    display: grid;
+    gap: @space-s;
+    grid-auto-flow: column;
+    align-items: center;
+  }
+
+  &__title {
+    .text-h2;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__folder-icon {
+    color: @purple;
+  }
+}

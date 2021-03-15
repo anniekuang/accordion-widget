@@ -1,0 +1,40 @@
+@import "./ActionBar";
+@import "./PageCard";
+@import "./DashboardSidebar";
+
+.proto-dashboard {
+  display: flex;
+  flex-direction: column;
+  background-color: @grey5;
+  height: 100%;
+
+  &__search {
+    flex: 0 1 640px;
+  }
+
+  &__main {
+    overflow-y: auto;
+    padding: 0 @space-m;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__content {
+    margin-top: @space-xl * 2;
+    padding-bottom: @space-xl * 2;
+    max-width: 1200px;
+    width: 100%;
+    display: grid;
+    gap: @space-xl;
+    align-self: center;
+    align-items: start;
+    grid-template-columns: 280px 1fr;
+  }
+
+  &__list {
+    display: grid;
+    gap: @space-s;
+  }
+}

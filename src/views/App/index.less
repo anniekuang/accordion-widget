@@ -1,0 +1,40 @@
+body {
+  .calibre;
+  box-sizing: border-box;
+  -moz-osx-font-smoothing: grayscale;
+  color: @midnight;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+
+  &__config {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: @space-m;
+    display: grid;
+    gap: @space-s;
+    place-content: end;
+    place-items: end;
+  }
+
+  &__config-panel {
+    position: static;
+    padding: @space-m;
+    display: grid;
+    gap: @space-m;
+  }
+}

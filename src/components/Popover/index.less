@@ -1,0 +1,32 @@
+.popover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+
+  &__panel {
+    position: static;
+    transition-property: opacity;
+    transition-duration: @duration-m;
+    transition-timing-function: @bezier-fastout-slowin;
+    opacity: 0;
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition-property: opacity, transform;
+
+      &--top {
+        transform: translate3d(0, @space-m, 0);
+      }
+
+      &--bottom {
+        transform: translate3d(0, -@space-m, 0);
+      }
+    }
+
+    &--entering,
+    &--entered {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
