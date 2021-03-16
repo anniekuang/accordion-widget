@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import Block from "./Block";
 import EditorNavbar from "./EditorNavbar";
 import Accordion from "./Accordion";
+import QuickAddMenu from "./QuickAddMenu";
 
 const Editor: FC = () => {
   return (
@@ -29,6 +30,7 @@ const Editor: FC = () => {
           <p>Prepared for [Add your client name]</p>
           <p>by [Add your name] — [Add your email address]</p>
           <Accordion></Accordion>
+          <QuickAddMenu></QuickAddMenu>
         </Block>
         <Block>
           <h1 style={{ color: "#2980b9" }}>
@@ -54,6 +56,7 @@ const Editor: FC = () => {
             <em>Ready to take the next step?</em>
           </h2>
           <p>Email: help@qwilr.com / Web: https://qwilr.com</p>
+          <Accordion></Accordion>
         </Block>
       </div>
     </div>
