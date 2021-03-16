@@ -12,6 +12,7 @@ class QuickAddMenu extends Component {
           size="small"
           button={
             <IconButton
+              className="quick-add-menu__button"
               icon={<Add />}
               //   tooltip={{ content: "Add content" }}
               aria-label="Add content"
