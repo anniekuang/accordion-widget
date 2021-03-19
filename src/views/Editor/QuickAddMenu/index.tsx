@@ -2,6 +2,7 @@ import { ButtonSize, ButtonType, IconButton, OptionMenu, OptionMenuItem } from "
 import { Add, Image, Table, TwoColumns, Video } from "kaleidoscope/src/global/icons";
 import React, { Component } from "react";
 import { ReactComponent as Accordion } from "../../../assets/accordion.svg";
+import { ReactComponent as Maps } from "../../../assets/maps.svg";
 
 class QuickAddMenu extends Component {
   render() {
@@ -14,7 +15,7 @@ class QuickAddMenu extends Component {
             <IconButton
               className="quick-add-menu__button"
               icon={<Add />}
-              //   tooltip={{ content: "Add content" }}
+              // tooltip={{ content: "Add content" }}
               aria-label="Add content"
               isRound
               type={ButtonType.Secondary}
@@ -30,10 +31,17 @@ class QuickAddMenu extends Component {
           <OptionMenuItem className="quick-add-menu__menu-item" icon={<Table style={{ color: "white" }} />}>
             Table
           </OptionMenuItem>
+          {/* <OptionMenuItem className="quick-add-menu__menu-item" icon={<Maps />}>
+            Google Map
+          </OptionMenuItem> */}
           <OptionMenuItem className="quick-add-menu__menu-item" icon={<TwoColumns style={{ color: "white" }} />}>
             2 Columns
           </OptionMenuItem>
-          <OptionMenuItem className="quick-add-menu__menu-item" icon={<Accordion style={{ color: "white" }} />}>
+          <OptionMenuItem
+            // onClick={this.handleClick}
+            className="quick-add-menu__menu-item"
+            icon={<Accordion style={{ color: "white" }} />}
+          >
             Accordion
           </OptionMenuItem>
         </OptionMenu>

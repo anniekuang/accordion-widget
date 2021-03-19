@@ -29,7 +29,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "kaleidoscope": "git@github.com:qwilr/kaleidoscope-components.git#3acb11b",
+    "kaleidoscope": "git@github.com:qwilr/kaleidoscope-components.git#2a725ac",
     "mobx": "5.9.4",
     "mobx-react": "5.4.4",
     "react": "^17.0.1",

@@ -7,10 +7,11 @@ import {
   TextInput,
   TextInputType,
   Toggle,
+  Popover,
+  PopoverPosition,
 } from "kaleidoscope/src";
 import { Settings } from "kaleidoscope/src/global/icons";
 import { startCase } from "lodash";
-import Popover, { PopoverPosition } from "components/Popover";
 import { reducer, ConfigReducerAction, AppConfigReducerProps, ConfigType, ConfigOption } from "./AppConfigReducer";
 import { useHistory } from "react-router-dom";
 import { appConfigOptions } from "./AppConfigOptions";

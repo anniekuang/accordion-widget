@@ -1,0 +1,55 @@
+.proto-toolbar {
+  transform: translate3d(var(--x), var(--y), 0);
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  &__content {
+    opacity: 0;
+    transform: translate3d(0, @space-s, 0);
+    transition-property: opacity, transform;
+    transition-duration: @duration-m;
+    transition-timing-function: @bezier-fastout-slowin;
+    background: @midnight;
+    border-radius: @control-border-radius;
+    padding: @space-xs;
+    display: grid;
+    gap: @space-xs;
+    grid-auto-flow: column;
+    box-shadow: 0px 15px 25px rgba(36, 44, 57, 0.1);
+  }
+
+  &__content--entering,
+  &__content--entered {
+    transform: none;
+    opacity: 1;
+  }
+
+  &__button {
+    @size: 40px;
+
+    color: white;
+    border-radius: @control-border-radius;
+    width: @size;
+    height: @size;
+    transition: background var(--duration-m) ease;
+    display: grid;
+    place-items: center;
+  }
+
+  &__button[aria-pressed="true"] {
+    color: @blue;
+  }
+
+  &__button[aria-pressed="true"] svg.kl-icon {
+    color: @blue;
+  }
+
+  &__button svg {
+    display: block;
+  }
+
+  &__button:hover {
+    background-color: fade(white, 0.2);
+  }
+}
