@@ -1,12 +1,12 @@
 .quick-add-menu__menu {
   background-color: @midnight;
-  transform: translate3d(108px, 200px, 0);
+  transform: translate3d(108px, 100px, 0);
 }
 
 .quick-add-menu__button:after {
   display: grid;
   align-items: center;
-  content: "Add content";
+  // content: "Add content";
   color: rgba(255, 255, 255, 0.5);
   font-size: 24px;
   margin: 4px 0 0.8em 56px;
@@ -27,4 +27,9 @@
 
 .quick-add-menu__item-icon {
   color: white;
+}
+
+.accordion-widget__body-enter-active,
+.accordion-widget__body-enter-done {
+  opacity: 1;
 }

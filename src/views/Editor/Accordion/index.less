@@ -1,15 +1,15 @@
 .accordion-widget {
   display: grid;
-  // gap: @space-s;
+  margin-bottom: @space-s;
+  gap: @space-s;
   padding: @space-s;
   // background-color: white;
-  border: 1px solid @grey25;
+  // border: 1px solid @grey25;
   // border-radius: 8px;
 
   // Text styling
   // color: @slate;
   font-size: 24px;
-  margin-bottom: 0.8em;
   line-height: 1.4;
   text-align: left;
   position: relative;
@@ -24,6 +24,15 @@
     left: @offset;
     right: @offset;
     pointer-events: none;
+  }
+
+  &--hover {
+    box-shadow: 0 0 0 3px rgba(@blue, 0.25);
+    border-radius: 7px;
+    // How do I animate the selection border if I've triggered it using event listeners?
+    transition-property: opacity;
+    transition-duration: @duration-s;
+    transition-timing-function: @bezier-fastout-slowin;
   }
 
   &--selected {
@@ -52,14 +61,30 @@
 .accordion-widget__header-button {
   display: grid;
   align-items: center;
-  height: 49px;
+  // height: 49px;
 }
 
 .accordion-widget__header-text {
   display: grid;
   align-self: stretch;
   width: 100%;
-  padding: @space-s;
+  padding-left: @space-s;
+
+  &--h1 {
+    font-size: 90px;
+  }
+
+  &--h2 {
+    font-size: 48px;
+  }
+
+  &--bold {
+    font-weight: 700;
+  }
+
+  &--italic {
+    font-style: italic;
+  }
 }
 
 .accordion-widget__body {

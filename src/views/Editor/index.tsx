@@ -46,15 +46,19 @@ class Editor extends React.Component {
             </h1>
             <p>Prepared for [Add your client name]</p>
             <p>by [Add your name] — [Add your email address]</p>
-            <Button onClick={this.addAccordion}>Add accordion</Button>
-            {this.state.accordionWidgets.map((accordionWidgetItem) => (
-              <Accordion
-                key={accordionWidgetItem.id}
-                id={accordionWidgetItem.id}
-                removeAccordion={() => this.removeAccordion(accordionWidgetItem.id)}
-              ></Accordion>
-            ))}
-            <QuickAddMenu></QuickAddMenu>
+
+            <div className="accordion-list">
+              {this.state.accordionWidgets.map((accordionWidgetItem) => (
+                <Accordion
+                  key={accordionWidgetItem.id}
+                  id={accordionWidgetItem.id}
+                  addAccordion={this.addAccordion}
+                  removeAccordion={() => this.removeAccordion(accordionWidgetItem.id)}
+                ></Accordion>
+              ))}
+            </div>
+            {/* <Button onClick={this.addAccordion}>Add accordion</Button> */}
+            <QuickAddMenu addAccordion={this.addAccordion}></QuickAddMenu>
           </Block>
           <Block>
             <h1 style={{ color: "#2980b9" }}>

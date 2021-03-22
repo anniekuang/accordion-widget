@@ -4,7 +4,11 @@ import React, { Component } from "react";
 import { ReactComponent as Accordion } from "../../../assets/accordion.svg";
 import { ReactComponent as Maps } from "../../../assets/maps.svg";
 
-class QuickAddMenu extends Component {
+interface QuickAddMenuProps {
+  addAccordion: () => void;
+}
+
+class QuickAddMenu extends Component<QuickAddMenuProps> {
   render() {
     return (
       <div className="quick-add-menu">
@@ -41,6 +45,7 @@ class QuickAddMenu extends Component {
             // onClick={this.handleClick}
             className="quick-add-menu__menu-item"
             icon={<Accordion style={{ color: "white" }} />}
+            onClick={this.props.addAccordion}
           >
             Accordion
           </OptionMenuItem>

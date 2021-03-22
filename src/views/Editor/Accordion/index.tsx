@@ -1,13 +1,14 @@
+// import { CSSTransition, Transition } from "react-transition-group";
 import { ButtonSize, IconButton, Popover, PopoverTheme, TextInput, Tooltip, TooltipElement } from "kaleidoscope/src";
 import Toolbar, { ToolbarButton } from "components/Toolbar";
-import { Bold, ChevronRight, Delete, H1, H2, Italic, Styles } from "kaleidoscope/src/global/icons";
+import { Bold, ChevronDown, ChevronRight, Delete, H1, H2, Italic, Styles } from "kaleidoscope/src/global/icons";
 import { ReactComponent as NewAccordion } from "assets/new-accordion.svg";
 import React, { Component, createRef } from "react";
 import classNames from "classnames";
-import { isValidHex } from "kaleidoscope/src/utils/color/colorUtil";
 
 interface AccordionWidgetProps {
   id: string;
+  addAccordion: () => void;
   removeAccordion: () => void;
 }
 
@@ -15,8 +16,16 @@ class Accordion extends Component<AccordionWidgetProps> {
   state = {
     bodyOpen: false,
     widgetSelected: false,
+    widgetHovering: false,
+    headerFocus: false,
     headerContentSelected: false,
+    bodyFocus: false,
     bodyContentSelected: false,
+    userTyping: false,
+    isBold: false,
+    isItalic: false,
+    isH1: false,
+    isH2: false,
   };
 
   widgetElementRef = createRef<HTMLDivElement>();
@@ -26,6 +35,30 @@ class Accordion extends Component<AccordionWidgetProps> {
   componentDidMount() {
     document.body.addEventListener("click", this.handleOuterClick);
     document.addEventListener("selectionchange", this.handleContentSelection);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && event.target === this.accordionHeaderRef.current) {
+        console.log("Enter!");
+        document.getElementById("headerContent").blur();
+        this.props.addAccordion;
+      }
+    });
+    document.addEventListener("keydown", (event) => {
+      this.setState({ widgetHovering: false });
+      console.log("Typing");
+    });
+    document.addEventListener("pointermove", (event) => {
+      if (
+        !this.state.widgetSelected &&
+        (event.target === this.widgetElementRef.current ||
+          event.target === this.accordionHeaderRef.current ||
+          event.target === this.accordionBodyRef.current)
+      ) {
+        this.setState({ widgetHovering: true });
+        console.log(this.state.widgetHovering);
+      } else {
+        this.setState({ widgetHovering: false });
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -63,6 +96,11 @@ class Accordion extends Component<AccordionWidgetProps> {
     }
   };
 
+  handleKeyboardFocus = (event) => {
+    // Can I use this.toggleContent instead?
+    this.setState({ bodyOpen: true });
+  };
+
   toggleContent = () => {
     if (this.state.bodyOpen === false) {
       this.setState({ bodyOpen: true });
@@ -90,15 +128,35 @@ class Accordion extends Component<AccordionWidgetProps> {
             theme={PopoverTheme.Dark}
             button={(buttonProps) => <ToolbarButton icon={<Styles />} {...buttonProps} />}
           ></Popover> */}
-          <ToolbarButton icon={<NewAccordion />} tooltip={{ content: "Add new Accordion" }} />
+          <ToolbarButton
+            icon={<NewAccordion />}
+            tooltip={{ content: "Add new Accordion" }}
+            onClick={this.props.addAccordion}
+          />
           <ToolbarButton icon={<Styles />} />
-          <ToolbarButton icon={<Delete />} />
+          <ToolbarButton icon={<Delete />} onClick={this.props.removeAccordion} />
         </Toolbar>
         <Toolbar visible={this.state.headerContentSelected} element={this.accordionHeaderRef.current}>
-          <ToolbarButton icon={<H1 />} />
-          <ToolbarButton icon={<H2 />} />
-          <ToolbarButton icon={<Bold />} />
-          <ToolbarButton icon={<Italic />} />
+          <ToolbarButton
+            icon={<H1 />}
+            onClick={() => this.setState({ isH1: !this.state.isH1, isH2: false })}
+            selected={this.state.isH1 ? true : false}
+          />
+          <ToolbarButton
+            icon={<H2 />}
+            onClick={() => this.setState({ isH2: !this.state.isH2, isH1: false })}
+            selected={this.state.isH2 ? true : false}
+          />
+          <ToolbarButton
+            icon={<Bold />}
+            onClick={() => this.setState({ isBold: !this.state.isBold })}
+            selected={this.state.isBold ? true : false}
+          />
+          <ToolbarButton
+            icon={<Italic />}
+            onClick={() => this.setState({ isItalic: !this.state.isItalic })}
+            selected={this.state.isItalic ? true : false}
+          />
         </Toolbar>
         <Toolbar visible={this.state.bodyContentSelected} element={this.accordionBodyRef.current}>
           <ToolbarButton icon={<H1 />} />
@@ -107,7 +165,10 @@ class Accordion extends Component<AccordionWidgetProps> {
           <ToolbarButton icon={<Italic />} />
         </Toolbar>
         <div
-          className={classNames("accordion-widget", { "accordion-widget--selected": this.state.widgetSelected })}
+          className={classNames("accordion-widget", {
+            "accordion-widget--selected": this.state.widgetSelected,
+            "accordion-widget--hover": this.state.widgetHovering,
+          })}
           ref={this.widgetElementRef}
           onClick={this.handleWidgetSelected}
         >
@@ -116,7 +177,9 @@ class Accordion extends Component<AccordionWidgetProps> {
             <div className="accordion-widget__header-button">
               <IconButton
                 size={ButtonSize.Small}
-                icon={<ChevronRight style={{ color: "white" }} />}
+                icon={
+                  bodyOpen ? <ChevronDown style={{ color: "white" }} /> : <ChevronRight style={{ color: "white" }} />
+                }
                 // tooltip={bodyOpen ? { content: "Collapse" } : { content: "Expand" }}
                 aria-label="Expand"
                 onClick={this.toggleContent}
@@ -124,11 +187,13 @@ class Accordion extends Component<AccordionWidgetProps> {
             </div>
             <div
               className={classNames("accordion-widget__header-text", {
-                "accordion-widget__header-text--h1": false,
-                "accordion-widget__header-text--bold": false,
-                // How do you set up booleans to trigger these styling options?
+                "accordion-widget__header-text--h1": this.state.isH1,
+                "accordion-widget__header-text--h2": this.state.isH2,
+                "accordion-widget__header-text--bold": this.state.isBold,
+                "accordion-widget__header-text--italic": this.state.isItalic,
               })}
               contentEditable
+              id="headerContent"
               ref={this.accordionHeaderRef}
               placeholder="Accordion heading"
             ></div>
@@ -148,6 +213,7 @@ class Accordion extends Component<AccordionWidgetProps> {
               </div>
             </>
           )}
+          {/* <CSSTransition appear timeout={400} classNames="accordion-widget__body-"></CSSTransition> */}
         </div>
       </>
     );
