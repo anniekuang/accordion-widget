@@ -1,21 +1,27 @@
 .accordion-widget {
   display: grid;
   margin-bottom: @space-s;
-  gap: @space-s;
   padding: @space-s;
   // background-color: white;
   // border: 1px solid @grey25;
   // border-radius: 8px;
+  box-shadow: 0 0 0 3px rgba(@blue, 0);
+  border-radius: 7px;
+  transition-property: box-shadow;
+  transition-duration: @duration-s;
+  transition-timing-function: @bezier-fastout-slowin;
 
-  // Text styling
-  // color: @slate;
   font-size: 24px;
   line-height: 1.4;
   text-align: left;
   position: relative;
 
+  &:focus {
+    outline: none;
+  }
+
   &::before {
-    @offset: 3px;
+    @offset: -3px;
 
     content: "";
     position: absolute;
@@ -29,26 +35,11 @@
   &--hover {
     box-shadow: 0 0 0 3px rgba(@blue, 0.25);
     border-radius: 7px;
-    // How do I animate the selection border if I've triggered it using event listeners?
-    transition-property: opacity;
-    transition-duration: @duration-s;
-    transition-timing-function: @bezier-fastout-slowin;
   }
 
   &--selected {
     box-shadow: 0 0 0 3px rgba(@blue, 0.5);
     border-radius: 7px;
-  }
-
-  &__header-text:empty::before,
-  &__body-text:empty::before {
-    content: attr(placeholder);
-    color: rgba(255, 255, 255, 0.5);
-  }
-
-  &__header-text:focus,
-  &__body-text:focus {
-    outline: none;
   }
 }
 
@@ -61,7 +52,16 @@
 .accordion-widget__header-button {
   display: grid;
   align-items: center;
-  // height: 49px;
+  height: 1.4em;
+  font-size: 24px;
+
+  &--h1 {
+    font-size: 90px;
+  }
+
+  &--h2 {
+    font-size: 48px;
+  }
 }
 
 .accordion-widget__header-text {
@@ -69,6 +69,16 @@
   align-self: stretch;
   width: 100%;
   padding-left: @space-s;
+
+  &:empty::before {
+    content: attr(placeholder);
+    // color: rgba(255, 255, 255, 0.5);
+    opacity: 0.5;
+  }
+
+  &:focus {
+    outline: none;
+  }
 
   &--h1 {
     font-size: 90px;
@@ -91,7 +101,24 @@
   border-radius: 4px;
   background-color: @grey10;
   padding: @space-s @space-s @space-s @space-xl;
+  margin-top: @space-s;
 }
 
 .accordion-widget__body-text {
+  &:empty::before {
+    content: attr(placeholder);
+    // color: rgba(255, 255, 255, 0.5);
+    opacity: 0.5;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.accordion-widget__body-transition-wrapper {
+  // Hide content while it's transitioning
+  overflow: hidden;
+  // Useful to split out the transition properties if transitioning multiple properties, or if you have different timing/duration for diff properties
+  transition: height @duration-m @bezier-fastout-slowin;
 }
