@@ -13,7 +13,7 @@ import EditorNavbar from "./EditorNavbar";
 import Accordion from "./Accordion";
 import QuickAddMenu from "./QuickAddMenu";
 import { randomString } from "kaleidoscope/src/utils";
-import { Button } from "kaleidoscope/src";
+import { Button, ButtonType } from "kaleidoscope/src";
 import { IReactComponent } from "mobx-react";
 
 class Editor extends React.Component {
@@ -22,23 +22,35 @@ class Editor extends React.Component {
     accordionWidgets2: [],
   };
 
-  addAccordion1 = () => {
-    this.setState({ accordionWidgets1: [...this.state.accordionWidgets1, { id: randomString() }] });
+  addAccordion1 = (index: number = this.state.accordionWidgets1.length) => {
+    this.setState({
+      accordionWidgets1: [
+        ...this.state.accordionWidgets1.slice(0, index + 1),
+        { id: randomString() },
+        ...this.state.accordionWidgets1.slice(index + 1, this.state.accordionWidgets1.length),
+      ],
+    });
   };
 
   removeAccordion1 = (id: string) => {
     this.setState({
-      accordionWidgets: this.state.accordionWidgets1.filter((accordionWidget) => accordionWidget.id !== id),
+      accordionWidgets1: this.state.accordionWidgets1.filter((accordionWidget) => accordionWidget.id !== id),
     });
   };
 
-  addAccordion2 = () => {
-    this.setState({ accordionWidgets2: [...this.state.accordionWidgets2, { id: randomString() }] });
+  addAccordion2 = (index: number = this.state.accordionWidgets2.length) => {
+    this.setState({
+      accordionWidgets2: [
+        ...this.state.accordionWidgets2.slice(0, index + 1),
+        { id: randomString() },
+        ...this.state.accordionWidgets2.slice(index + 1, this.state.accordionWidgets2.length),
+      ],
+    });
   };
 
   removeAccordion2 = (id: string) => {
     this.setState({
-      accordionWidgets: this.state.accordionWidgets2.filter((accordionWidget) => accordionWidget.id !== id),
+      accordionWidgets2: this.state.accordionWidgets2.filter((accordionWidget) => accordionWidget.id !== id),
     });
   };
 
@@ -49,6 +61,12 @@ class Editor extends React.Component {
           <title>Accordion Accords</title>
         </Helmet>
         <EditorNavbar />
+        <a
+          target="_blank"
+          href="https://www.notion.so/qwilr/Reflection-Pool-Accordion-Widget-846d5aa5eeff4c12a0942abcc0a73cea#0d2a6cd899044b1d915bea7ef5efab27"
+        >
+          <Button type={ButtonType.Secondary}>Leave Feedback</Button>
+        </a>
         <div className="proto-editor__content">
           <div className="splash-block--dark">
             <Block
@@ -67,17 +85,15 @@ class Editor extends React.Component {
               </h1>
               <p>Prepared for [Add your client name]</p>
               <p>by [Add your name] — [Add your email address]</p>
-              {React.Children.toArray(
-                this.state.accordionWidgets1.map((accordionWidgetItem) => (
-                  <Accordion
-                    key={accordionWidgetItem.id}
-                    id={accordionWidgetItem.id}
-                    addAccordion={this.addAccordion1}
-                    removeAccordion={() => this.removeAccordion1(accordionWidgetItem.id)}
-                  ></Accordion>
-                )),
-              )}
-              <QuickAddMenu addAccordion={this.addAccordion1}></QuickAddMenu>
+              {/* {this.state.accordionWidgets1.map((accordionWidgetItem, index) => (
+                <Accordion
+                  key={accordionWidgetItem.id}
+                  id={accordionWidgetItem.id}
+                  addAccordion={() => this.addAccordion1(index)}
+                  removeAccordion={() => this.removeAccordion1(accordionWidgetItem.id)}
+                ></Accordion>
+              ))} */}
+              {/* <QuickAddMenu addAccordion={this.addAccordion1}></QuickAddMenu> */}
             </Block>
           </div>
           <Block>
@@ -95,11 +111,11 @@ class Editor extends React.Component {
               their commercial space, tailoring your sales material and your pitch for this particular business. Luckily
               with Qwilr, the tailoring part if quick and easy.
             </p>
-            {this.state.accordionWidgets2.map((accordionWidgetItem) => (
+            {this.state.accordionWidgets2.map((accordionWidgetItem, index) => (
               <Accordion
                 key={accordionWidgetItem.id}
                 id={accordionWidgetItem.id}
-                addAccordion={this.addAccordion2}
+                addAccordion={() => this.addAccordion2(index)}
                 removeAccordion={() => this.removeAccordion2(accordionWidgetItem.id)}
               ></Accordion>
             ))}

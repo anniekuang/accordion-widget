@@ -5,6 +5,7 @@ import Editor from "views/Editor";
 import Dashboard from "views/Dashboard";
 import favicon from "assets/logo.svg";
 import AppConfig from "./AppConfig";
+import { Button, ButtonType } from "kaleidoscope/src";
 
 const App: FC = () => {
   return (

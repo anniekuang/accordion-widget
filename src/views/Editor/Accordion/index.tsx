@@ -26,7 +26,6 @@ interface AccordionWidgetProps {
   id: string;
   addAccordion: () => void;
   removeAccordion: () => void;
-  className?: string;
 }
 
 class Accordion extends Component<AccordionWidgetProps> {
@@ -43,7 +42,7 @@ class Accordion extends Component<AccordionWidgetProps> {
     isItalic: false,
     isH1: false,
     isH2: false,
-    isH3: false,
+    isH3: true,
     bodyHTML: "",
     bodyHeight: 0,
     bodyEntered: false,
@@ -157,7 +156,7 @@ class Accordion extends Component<AccordionWidgetProps> {
   };
 
   handleBodyChange = (event) => {
-    this.setState({ bodyHTML: event.target.value });
+    this.setState({ bodyHTML: event.target.value, widgetHovering: false });
   };
 
   // "element" here should give a reference to the CSSTransition child element
@@ -209,7 +208,7 @@ class Accordion extends Component<AccordionWidgetProps> {
             tooltip={{ content: "Add new Accordion" }}
             onClick={this.handleNewAccordion}
           />
-          <ToolbarButton icon={<Styles />} />
+          {/* <ToolbarButton icon={<Styles />} /> */}
           <ToolbarButton icon={<Delete />} onClick={this.props.removeAccordion} />
         </Toolbar>
         <Toolbar visible={this.state.headerContentSelected} element={this.accordionHeaderRef.current}>
@@ -239,12 +238,12 @@ class Accordion extends Component<AccordionWidgetProps> {
             selected={this.state.isItalic ? true : false}
           />
         </Toolbar>
-        <Toolbar visible={this.state.bodyContentSelected} element={this.accordionBodyTextRef.current}>
+        {/* <Toolbar visible={this.state.bodyContentSelected} element={this.accordionBodyTextRef.current}>
           <ToolbarButton icon={<H1 />} />
           <ToolbarButton icon={<H2 />} />
           <ToolbarButton icon={<Bold />} />
           <ToolbarButton icon={<Italic />} />
-        </Toolbar>
+        </Toolbar> */}
         <div
           className={classNames("accordion-widget", {
             "accordion-widget--selected": this.state.widgetSelected,
@@ -327,7 +326,7 @@ class Accordion extends Component<AccordionWidgetProps> {
                 <ContentEditable
                   className="accordion-widget__body-text"
                   innerRef={this.accordionBodyTextRef}
-                  placeholder="Empty accordion"
+                  placeholder="Add your content"
                   html={this.state.bodyHTML}
                   onChange={this.handleBodyChange}
                 >
