@@ -1,5 +1,14 @@
 // import { CSSTransition, Transition } from "react-transition-group";
-import { ButtonSize, IconButton, Popover, PopoverTheme, TextInput, Tooltip, TooltipElement } from "kaleidoscope/src";
+import {
+  ButtonSize,
+  IconButton,
+  Popover,
+  PopoverTheme,
+  TextInput,
+  Toggle,
+  Tooltip,
+  TooltipElement,
+} from "kaleidoscope/src";
 import Toolbar, { ToolbarButton } from "components/Toolbar";
 import { Bold, ChevronDown, ChevronRight, Delete, H1, H2, Italic, Styles } from "kaleidoscope/src/global/icons";
 import { ReactComponent as NewAccordion } from "assets/new-accordion.svg";
@@ -10,11 +19,12 @@ import ContentEditable from "react-contenteditable";
 import { CSSTransition } from "react-transition-group";
 import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
 import forceReflow from "kaleidoscope/src/utils/forceReflow";
+import { ToggleTheme } from "kaleidoscope/src/global/pieces/Toggle/Toggle";
+import { DEFAULT_GREY10 } from "kaleidoscope/src/utils/color/defaultColors";
 
 interface AccordionWidgetProps {
   id: string;
   addAccordion: () => void;
-  insertAccordion: () => void;
   removeAccordion: () => void;
   className?: string;
 }
@@ -33,10 +43,11 @@ class Accordion extends Component<AccordionWidgetProps> {
     isItalic: false,
     isH1: false,
     isH2: false,
-    isH3: true,
+    isH3: false,
     bodyHTML: "",
     bodyHeight: 0,
     bodyEntered: false,
+    bodyBackground: true,
   };
 
   widgetElementRef = createRef<HTMLDivElement>();
@@ -122,7 +133,7 @@ class Accordion extends Component<AccordionWidgetProps> {
     this.setState({ bodyOpen: true });
   };
 
-  handleHeaderKeyDown = (event) => {
+  handleKeyDown = (event) => {
     if (event.key === "Enter") {
       // Add a new accordion when `Enter` is pressed
       this.props.addAccordion();
@@ -185,7 +196,14 @@ class Accordion extends Component<AccordionWidgetProps> {
             offset={8}
             theme={PopoverTheme.Dark}
             button={(buttonProps) => <ToolbarButton icon={<Styles />} {...buttonProps} />}
-          ></Popover> */}
+          >
+            <Toggle
+              theme={ToggleTheme.Dark}
+              value={true}
+              label="Content background"
+              // onChange={(event) => this.setState({ bodyBackground: !this.state.bodyBackground })}
+            ></Toggle>
+          </Popover> */}
           <ToolbarButton
             icon={<NewAccordion />}
             tooltip={{ content: "Add new Accordion" }}
@@ -279,7 +297,7 @@ class Accordion extends Component<AccordionWidgetProps> {
               id="headerContent"
               ref={this.accordionHeaderRef}
               placeholder="Accordion heading"
-              onKeyDown={this.handleHeaderKeyDown}
+              onKeyDown={this.handleKeyDown}
             ></div>
           </div>
           <div
@@ -300,7 +318,12 @@ class Accordion extends Component<AccordionWidgetProps> {
               }}
             >
               {/* Accordion body */}
-              <div className="accordion-widget__body" onClick={this.handleContentClick} ref={this.accordionBodyRef}>
+              <div
+                className="accordion-widget__body"
+                onClick={this.handleContentClick}
+                ref={this.accordionBodyRef}
+                style={{ backgroundColor: this.state.bodyBackground ? "@grey10" : "transparent" }}
+              >
                 <ContentEditable
                   className="accordion-widget__body-text"
                   innerRef={this.accordionBodyTextRef}

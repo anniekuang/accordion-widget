@@ -18,30 +18,35 @@ import { IReactComponent } from "mobx-react";
 
 class Editor extends React.Component {
   state = {
-    accordionWidgets: [],
+    accordionWidgets1: [],
+    accordionWidgets2: [],
   };
 
-  addAccordion = () => {
-    this.setState({ accordionWidgets: [...this.state.accordionWidgets, { id: randomString() }] });
+  addAccordion1 = () => {
+    this.setState({ accordionWidgets1: [...this.state.accordionWidgets1, { id: randomString() }] });
   };
 
-  insertAccordion = () => {
-    // this.setState({ accordionWidgets: this.state.accordionWidgets.filter((accordionWidget) => accordionWidget.id, {id: accordionWidget.id + 1} });
-    this.setState({ accordionWidgets: [...this.state.accordionWidgets, { id: randomString }] });
-  };
-
-  removeAccordion = (id: string) => {
+  removeAccordion1 = (id: string) => {
     this.setState({
-      accordionWidgets: this.state.accordionWidgets.filter((accordionWidget) => accordionWidget.id !== id),
+      accordionWidgets: this.state.accordionWidgets1.filter((accordionWidget) => accordionWidget.id !== id),
     });
-    console.log(this.state.accordionWidgets.findIndex((accordionWidget) => accordionWidget.id !== id));
+  };
+
+  addAccordion2 = () => {
+    this.setState({ accordionWidgets2: [...this.state.accordionWidgets2, { id: randomString() }] });
+  };
+
+  removeAccordion2 = (id: string) => {
+    this.setState({
+      accordionWidgets: this.state.accordionWidgets2.filter((accordionWidget) => accordionWidget.id !== id),
+    });
   };
 
   render() {
     return (
       <div className="proto-editor">
         <Helmet>
-          <title>Project name</title>
+          <title>Accordion Accords</title>
         </Helmet>
         <EditorNavbar />
         <div className="proto-editor__content">
@@ -63,17 +68,16 @@ class Editor extends React.Component {
               <p>Prepared for [Add your client name]</p>
               <p>by [Add your name] — [Add your email address]</p>
               {React.Children.toArray(
-                this.state.accordionWidgets.map((accordionWidgetItem) => (
+                this.state.accordionWidgets1.map((accordionWidgetItem) => (
                   <Accordion
                     key={accordionWidgetItem.id}
                     id={accordionWidgetItem.id}
-                    addAccordion={this.addAccordion}
-                    insertAccordion={this.insertAccordion}
-                    removeAccordion={() => this.removeAccordion(accordionWidgetItem.id)}
+                    addAccordion={this.addAccordion1}
+                    removeAccordion={() => this.removeAccordion1(accordionWidgetItem.id)}
                   ></Accordion>
                 )),
               )}
-              <QuickAddMenu addAccordion={this.addAccordion}></QuickAddMenu>
+              <QuickAddMenu addAccordion={this.addAccordion1}></QuickAddMenu>
             </Block>
           </div>
           <Block>
@@ -91,16 +95,15 @@ class Editor extends React.Component {
               their commercial space, tailoring your sales material and your pitch for this particular business. Luckily
               with Qwilr, the tailoring part if quick and easy.
             </p>
-            {/* {this.state.accordionWidgets.map((accordionWidgetItem) => (
+            {this.state.accordionWidgets2.map((accordionWidgetItem) => (
               <Accordion
                 key={accordionWidgetItem.id}
                 id={accordionWidgetItem.id}
-                addAccordion={this.addAccordion}
-                removeAccordion={() => this.removeAccordion(accordionWidgetItem.id)}
+                addAccordion={this.addAccordion2}
+                removeAccordion={() => this.removeAccordion2(accordionWidgetItem.id)}
               ></Accordion>
-            ))} */}
-            {/* <Button onClick={this.addAccordion}>Add accordion</Button> */}
-            {/* <QuickAddMenu addAccordion={this.addAccordion}></QuickAddMenu> */}
+            ))}
+            <QuickAddMenu addAccordion={this.addAccordion2}></QuickAddMenu>
           </Block>
           <Block theme="dark" backgroundColor="#34495e" textAlign="center">
             <h1>

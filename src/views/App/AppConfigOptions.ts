@@ -4,7 +4,7 @@ import { ConfigType } from "./AppConfigReducer";
 export const appConfigOptions = {
   showConfig: {
     type: ConfigType.Toggle,
-    value: true,
+    value: false,
   },
   exampleToggle: {
     type: ConfigType.Toggle,
