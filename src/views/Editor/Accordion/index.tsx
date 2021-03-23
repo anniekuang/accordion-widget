@@ -3,6 +3,7 @@ import { ButtonSize, IconButton, Popover, PopoverTheme, TextInput, Tooltip, Tool
 import Toolbar, { ToolbarButton } from "components/Toolbar";
 import { Bold, ChevronDown, ChevronRight, Delete, H1, H2, Italic, Styles } from "kaleidoscope/src/global/icons";
 import { ReactComponent as NewAccordion } from "assets/new-accordion.svg";
+import { ReactComponent as H3 } from "assets/h3.svg";
 import React, { Component, createRef } from "react";
 import classNames from "classnames";
 import ContentEditable from "react-contenteditable";
@@ -13,6 +14,7 @@ import forceReflow from "kaleidoscope/src/utils/forceReflow";
 interface AccordionWidgetProps {
   id: string;
   addAccordion: () => void;
+  insertAccordion: () => void;
   removeAccordion: () => void;
   className?: string;
 }
@@ -31,6 +33,7 @@ class Accordion extends Component<AccordionWidgetProps> {
     isItalic: false,
     isH1: false,
     isH2: false,
+    isH3: true,
     bodyHTML: "",
     bodyHeight: 0,
     bodyEntered: false,
@@ -78,6 +81,14 @@ class Accordion extends Component<AccordionWidgetProps> {
   handleWidgetFocus = (event) => {
     if (event.target === this.widgetElementRef.current) {
       this.setState({ widgetSelected: true });
+    }
+  };
+
+  handleWidgetHover = (event) => {
+    if (event.target === this.widgetElementRef.current) {
+      this.setState({ widgetHovering: true });
+    } else {
+      this.setState({ widgetHovering: false });
     }
   };
 
@@ -131,7 +142,6 @@ class Accordion extends Component<AccordionWidgetProps> {
     if ((event.key = "Tab" && this.state.widgetSelected === true)) {
       this.setState({ widgetSelected: false });
       this.widgetElementRef.current.blur();
-      console.log("Tab");
     }
   };
 
@@ -187,13 +197,18 @@ class Accordion extends Component<AccordionWidgetProps> {
         <Toolbar visible={this.state.headerContentSelected} element={this.accordionHeaderRef.current}>
           <ToolbarButton
             icon={<H1 />}
-            onClick={() => this.setState({ isH1: !this.state.isH1, isH2: false })}
+            onClick={() => this.setState({ isH1: !this.state.isH1, isH2: false, isH3: false })}
             selected={this.state.isH1 ? true : false}
           />
           <ToolbarButton
             icon={<H2 />}
-            onClick={() => this.setState({ isH2: !this.state.isH2, isH1: false })}
+            onClick={() => this.setState({ isH2: !this.state.isH2, isH1: false, isH3: false })}
             selected={this.state.isH2 ? true : false}
+          />
+          <ToolbarButton
+            icon={<H3 />}
+            onClick={() => this.setState({ isH3: !this.state.isH3, isH1: false, isH2: false })}
+            selected={this.state.isH3 ? true : false}
           />
           <ToolbarButton
             icon={<Bold />}
@@ -224,6 +239,7 @@ class Accordion extends Component<AccordionWidgetProps> {
           // onFocus bubbles up
           onFocus={this.handleWidgetFocus}
           onKeyDown={this.handleWidgetTabKeyDown}
+          onPointerMove={this.handleWidgetHover}
         >
           {/* Accordion header */}
           <div className="accordion-widget__header" onClick={this.handleContentClick}>
@@ -232,6 +248,7 @@ class Accordion extends Component<AccordionWidgetProps> {
               className={classNames("accordion-widget__header-button", {
                 "accordion-widget__header-button--h1": this.state.isH1,
                 "accordion-widget__header-button--h2": this.state.isH2,
+                "accordion-widget__header-button--h3": this.state.isH3,
               })}
             >
               <IconButton
@@ -254,6 +271,7 @@ class Accordion extends Component<AccordionWidgetProps> {
               className={classNames("accordion-widget__header-text", {
                 "accordion-widget__header-text--h1": this.state.isH1,
                 "accordion-widget__header-text--h2": this.state.isH2,
+                "accordion-widget__header-text--h3": this.state.isH3,
                 "accordion-widget__header-text--bold": this.state.isBold,
                 "accordion-widget__header-text--italic": this.state.isItalic,
               })}

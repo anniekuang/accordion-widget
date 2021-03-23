@@ -49,6 +49,10 @@
   width: 100%;
 }
 
+@h1: 90px;
+@h2: 48px;
+@h3: 32px;
+
 .accordion-widget__header-button {
   display: grid;
   align-items: center;
@@ -56,11 +60,15 @@
   font-size: 24px;
 
   &--h1 {
-    font-size: 90px;
+    font-size: @h1;
   }
 
   &--h2 {
-    font-size: 48px;
+    font-size: @h2;
+  }
+
+  &--h3 {
+    font-size: @h3;
   }
 }
 
@@ -81,11 +89,15 @@
   }
 
   &--h1 {
-    font-size: 90px;
+    font-size: @h1;
   }
 
   &--h2 {
-    font-size: 48px;
+    font-size: @h2;
+  }
+
+  &--h3 {
+    font-size: @h3;
   }
 
   &--bold {

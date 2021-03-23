@@ -25,10 +25,16 @@ class Editor extends React.Component {
     this.setState({ accordionWidgets: [...this.state.accordionWidgets, { id: randomString() }] });
   };
 
+  insertAccordion = () => {
+    // this.setState({ accordionWidgets: this.state.accordionWidgets.filter((accordionWidget) => accordionWidget.id, {id: accordionWidget.id + 1} });
+    this.setState({ accordionWidgets: [...this.state.accordionWidgets, { id: randomString }] });
+  };
+
   removeAccordion = (id: string) => {
     this.setState({
       accordionWidgets: this.state.accordionWidgets.filter((accordionWidget) => accordionWidget.id !== id),
     });
+    console.log(this.state.accordionWidgets.findIndex((accordionWidget) => accordionWidget.id !== id));
   };
 
   render() {
@@ -56,14 +62,17 @@ class Editor extends React.Component {
               </h1>
               <p>Prepared for [Add your client name]</p>
               <p>by [Add your name] — [Add your email address]</p>
-              {this.state.accordionWidgets.map((accordionWidgetItem) => (
-                <Accordion
-                  key={accordionWidgetItem.id}
-                  id={accordionWidgetItem.id}
-                  addAccordion={this.addAccordion}
-                  removeAccordion={() => this.removeAccordion(accordionWidgetItem.id)}
-                ></Accordion>
-              ))}
+              {React.Children.toArray(
+                this.state.accordionWidgets.map((accordionWidgetItem) => (
+                  <Accordion
+                    key={accordionWidgetItem.id}
+                    id={accordionWidgetItem.id}
+                    addAccordion={this.addAccordion}
+                    insertAccordion={this.insertAccordion}
+                    removeAccordion={() => this.removeAccordion(accordionWidgetItem.id)}
+                  ></Accordion>
+                )),
+              )}
               <QuickAddMenu addAccordion={this.addAccordion}></QuickAddMenu>
             </Block>
           </div>
