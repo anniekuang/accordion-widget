@@ -21,6 +21,7 @@ import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
 import forceReflow from "kaleidoscope/src/utils/forceReflow";
 import { ToggleTheme } from "kaleidoscope/src/global/pieces/Toggle/Toggle";
 import { DEFAULT_GREY10 } from "kaleidoscope/src/utils/color/defaultColors";
+import { keys } from "mobx";
 
 interface AccordionWidgetProps {
   id: string;
@@ -43,6 +44,7 @@ class Accordion extends Component<AccordionWidgetProps> {
     isH1: false,
     isH2: false,
     isH3: true,
+    headerHTML: "",
     bodyHTML: "",
     bodyHeight: 0,
     bodyEntered: false,
@@ -142,6 +144,8 @@ class Accordion extends Component<AccordionWidgetProps> {
       // Toggle open accordion & focus into content text area when `Tab` is pressed
       this.setState({ bodyOpen: true });
       this.setState({ widgetHovering: false });
+    } else if (event.key === "Backspace" && this.state.headerHTML === "") {
+      this.props.removeAccordion();
     } else {
       // Hide widget selection border when user starts typing
       this.setState({ widgetHovering: false });
@@ -149,10 +153,14 @@ class Accordion extends Component<AccordionWidgetProps> {
   };
 
   handleWidgetTabKeyDown = (event) => {
-    if ((event.key = "Tab" && this.state.widgetSelected === true)) {
+    if (event.key === "Tab" && this.state.widgetSelected === true) {
       this.setState({ widgetSelected: false });
       this.widgetElementRef.current.blur();
     }
+  };
+
+  handleHeaderChange = (event) => {
+    this.setState({ headerHTML: event.target.value, widgetHovering: false });
   };
 
   handleBodyChange = (event) => {
@@ -167,6 +175,12 @@ class Accordion extends Component<AccordionWidgetProps> {
   handleNewAccordion = () => {
     this.props.addAccordion();
     this.setState({ widgetSelected: false });
+  };
+
+  handleDeleteAccordion = (event) => {
+    if (this.state.headerHTML === "" && event.key === "Backspace") {
+      this.props.removeAccordion();
+    }
   };
 
   toggleContent = () => {
@@ -284,7 +298,7 @@ class Accordion extends Component<AccordionWidgetProps> {
               />
             </div>
             {/* Accordion header text */}
-            <div
+            {/* <div
               className={classNames("accordion-widget__header-text", {
                 "accordion-widget__header-text--h1": this.state.isH1,
                 "accordion-widget__header-text--h2": this.state.isH2,
@@ -297,7 +311,21 @@ class Accordion extends Component<AccordionWidgetProps> {
               ref={this.accordionHeaderRef}
               placeholder="Accordion heading"
               onKeyDown={this.handleKeyDown}
-            ></div>
+            ></div> */}
+            <ContentEditable
+              className={classNames("accordion-widget__header-text", {
+                "accordion-widget__header-text--h1": this.state.isH1,
+                "accordion-widget__header-text--h2": this.state.isH2,
+                "accordion-widget__header-text--h3": this.state.isH3,
+                "accordion-widget__header-text--bold": this.state.isBold,
+                "accordion-widget__header-text--italic": this.state.isItalic,
+              })}
+              innerRef={this.accordionHeaderRef}
+              placeholder="Accordion heading"
+              html={this.state.headerHTML}
+              onChange={this.handleHeaderChange}
+              onKeyDown={this.handleKeyDown}
+            />
           </div>
           <div
             className="accordion-widget__body-transition-wrapper"
@@ -329,9 +357,8 @@ class Accordion extends Component<AccordionWidgetProps> {
                   placeholder="Add your content"
                   html={this.state.bodyHTML}
                   onChange={this.handleBodyChange}
-                >
-                  {/* How do you make the content sticky? */}
-                </ContentEditable>
+                  onKeyDown={this.handleDeleteAccordion}
+                />
               </div>
             </CSSTransition>
           </div>

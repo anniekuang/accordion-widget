@@ -38,6 +38,12 @@ class Editor extends React.Component {
     });
   };
 
+  newAccordion = () => {
+    this.setState({
+      accordionWidgets2: [...this.state.accordionWidgets2, { id: randomString() }],
+    });
+  };
+
   addAccordion2 = (index: number = this.state.accordionWidgets2.length) => {
     this.setState({
       accordionWidgets2: [
@@ -58,15 +64,15 @@ class Editor extends React.Component {
     return (
       <div className="proto-editor">
         <Helmet>
-          <title>Accordion Accords</title>
+          <title>Email Marketing Proposal</title>
         </Helmet>
         <EditorNavbar />
-        <a
+        {/* <a
           target="_blank"
           href="https://www.notion.so/qwilr/Reflection-Pool-Accordion-Widget-846d5aa5eeff4c12a0942abcc0a73cea#0d2a6cd899044b1d915bea7ef5efab27"
         >
           <Button type={ButtonType.Secondary}>Leave Feedback</Button>
-        </a>
+        </a> */}
         <div className="proto-editor__content">
           <div className="splash-block--dark">
             <Block
@@ -81,10 +87,10 @@ class Editor extends React.Component {
                 style={{ width: "25%" }}
               />
               <h1>
-                <b>Sales Proposal</b>
+                <b>Email Marketing Proposal</b>
               </h1>
-              <p>Prepared for [Add your client name]</p>
-              <p>by [Add your name] — [Add your email address]</p>
+              <p>Prepared for Billie Danish</p>
+              <p>by Sally Fields — sallyfields@signify.com</p>
               {/* {this.state.accordionWidgets1.map((accordionWidgetItem, index) => (
                 <Accordion
                   key={accordionWidgetItem.id}
@@ -98,19 +104,17 @@ class Editor extends React.Component {
           </div>
           <Block>
             <h1 style={{ color: "#2980b9" }}>
-              <b>Project outline—</b>
+              <b>Process outline—</b>
             </h1>
             <h2>Breaking down requirements</h2>
             <p>
-              The project description is an opportunity to demonstrate to your potential client that you have fully
-              internalised what their business and their brand is about.
+              As digital marketing specialists, Signify’s consultants have improved the way our clients interact and
+              engage with customers online. Our expertise in full service digital solutions, digital marketing and
+              technology solutions as well as our integrated approach towards seamless digital marketing campaigns, and
+              our cutting edge marketing techniques that have been backed by industry best practices have helped many of
+              our clients achieve their marketing objectives.
             </p>
-            <p>
-              Successful sales is about establishing trust between parties. Your sales material, as an extension of you,
-              the salespersons, should demonstrate that you have listened attentively to your client and researched
-              their commercial space, tailoring your sales material and your pitch for this particular business. Luckily
-              with Qwilr, the tailoring part if quick and easy.
-            </p>
+            <p>Read about our process below.</p>
             {this.state.accordionWidgets2.map((accordionWidgetItem, index) => (
               <Accordion
                 key={accordionWidgetItem.id}
@@ -119,7 +123,7 @@ class Editor extends React.Component {
                 removeAccordion={() => this.removeAccordion2(accordionWidgetItem.id)}
               ></Accordion>
             ))}
-            <QuickAddMenu addAccordion={this.addAccordion2}></QuickAddMenu>
+            <QuickAddMenu addAccordion={this.newAccordion}></QuickAddMenu>
           </Block>
           <Block theme="dark" backgroundColor="#34495e" textAlign="center">
             <h1>
@@ -128,7 +132,7 @@ class Editor extends React.Component {
             <h2>
               <em>Ready to take the next step?</em>
             </h2>
-            <p>Email: help@qwilr.com / Web: https://qwilr.com</p>
+            <p>Email: help@signify.com / Web: https://signify.com</p>
           </Block>
         </div>
       </div>

@@ -8,7 +8,7 @@ interface EditorNavbarProps {
   title?: string;
 }
 
-const EditorNavbar: FC<EditorNavbarProps> = ({ title = "Project name" }) => {
+const EditorNavbar: FC<EditorNavbarProps> = ({ title = "Email Marketing Proposal" }) => {
   return (
     <Navbar>
       <Helmet>
