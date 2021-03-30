@@ -11,6 +11,7 @@ import { Helmet } from "react-helmet";
 import Block from "./Block";
 import EditorNavbar from "./EditorNavbar";
 import AccordionA from "./Accordion/AccordionA";
+import AccordionCard from "./AccordionCard";
 import QuickAddMenu from "./QuickAddMenu";
 import { randomString } from "kaleidoscope/src/utils";
 import { Button, ButtonType } from "kaleidoscope/src";
@@ -18,7 +19,7 @@ import { IReactComponent } from "mobx-react";
 
 class Editor extends React.Component {
   state = {
-    accordionWidgets1: [],
+    accordionWidgets1: [{ id: randomString() }],
     accordionWidgets2: [],
   };
 
@@ -91,14 +92,14 @@ class Editor extends React.Component {
               </h1>
               <p>Prepared for Billie Danish</p>
               <p>by Sally Fields — sallyfields@signify.com</p>
-              {/* {this.state.accordionWidgets1.map((accordionWidgetItem, index) => (
-                <Accordion
+              {this.state.accordionWidgets1.map((accordionWidgetItem, index) => (
+                <AccordionCard
                   key={accordionWidgetItem.id}
                   id={accordionWidgetItem.id}
                   addAccordion={() => this.addAccordion1(index)}
                   removeAccordion={() => this.removeAccordion1(accordionWidgetItem.id)}
-                ></Accordion>
-              ))} */}
+                ></AccordionCard>
+              ))}
               {/* <QuickAddMenu addAccordion={this.addAccordion1}></QuickAddMenu> */}
             </Block>
           </div>

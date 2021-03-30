@@ -91,15 +91,6 @@ class Editor extends React.Component {
               </h1>
               <p>Prepared for Billie Danish</p>
               <p>by Sally Fields — sallyfields@signify.com</p>
-              {/* {this.state.accordionWidgets1.map((accordionWidgetItem, index) => (
-                <Accordion
-                  key={accordionWidgetItem.id}
-                  id={accordionWidgetItem.id}
-                  addAccordion={() => this.addAccordion1(index)}
-                  removeAccordion={() => this.removeAccordion1(accordionWidgetItem.id)}
-                ></Accordion>
-              ))} */}
-              {/* <QuickAddMenu addAccordion={this.addAccordion1}></QuickAddMenu> */}
             </Block>
           </div>
           <Block>

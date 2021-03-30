@@ -58,8 +58,13 @@ const AppConfig: FC = ({ children }) => {
     dispatch({ type: ConfigReducerAction.SetConfig, value: { [key]: { ...option, value } } });
   };
 
+  const stateValues = Object.keys(state).reduce((acc, curr) => {
+    acc[curr] = state[curr].value;
+    return acc;
+  }, {});
+
   return (
-    <ConfigContext.Provider value={state}>
+    <ConfigContext.Provider value={stateValues}>
       {children}
       {state.showConfig.value && (
         <div className="app__config">

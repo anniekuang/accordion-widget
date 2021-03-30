@@ -47,7 +47,7 @@ class QuickAddMenu extends Component<QuickAddMenuProps> {
             icon={<Accordion style={{ color: "white" }} />}
             onClick={this.props.addAccordion}
           >
-            Accordion
+            Foldable item
           </OptionMenuItem>
         </OptionMenu>
       </div>
