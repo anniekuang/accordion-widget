@@ -19,9 +19,6 @@ import ContentEditable from "react-contenteditable";
 import { CSSTransition } from "react-transition-group";
 import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
 import forceReflow from "kaleidoscope/src/utils/forceReflow";
-import { ToggleTheme } from "kaleidoscope/src/global/pieces/Toggle/Toggle";
-import { DEFAULT_GREY10 } from "kaleidoscope/src/utils/color/defaultColors";
-import { keys } from "mobx";
 
 interface AccordionWidgetProps {
   id: string;

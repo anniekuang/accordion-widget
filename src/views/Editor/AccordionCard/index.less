@@ -150,6 +150,11 @@
   }
 }
 
+.accordion-card-widget__header-image-controls-transition-wrapper {
+  overflow: hidden;
+  transition: height @duration-m @bezier-fastout-slowin, opacity @duration-m @bezier-standard;
+}
+
 .accordion-card-widget__body-transition-wrapper {
   // Hide content while it's transitioning
   overflow: hidden;

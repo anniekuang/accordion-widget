@@ -4,6 +4,8 @@ import Toolbar, { ToolbarButton } from "components/Toolbar";
 import { Bold, ChevronDown, ChevronRight, Delete, H1, H2, Italic, Styles } from "kaleidoscope/src/global/icons";
 import { ReactComponent as NewAccordion } from "assets/new-accordion.svg";
 import { ReactComponent as H3 } from "assets/h3.svg";
+import { ReactComponent as MarkerArrowRight } from "assets/marker-arrow-right.svg";
+import { ReactComponent as MarkerArrowDown } from "assets/marker-arrow-down.svg";
 import React, { Component, createRef } from "react";
 import classNames from "classnames";
 import ContentEditable from "react-contenteditable";
@@ -302,9 +304,9 @@ class Accordion extends Component<AccordionWidgetProps> {
                 size={ButtonSize.Small}
                 icon={
                   bodyOpen ? (
-                    <ChevronDown style={{ color: "inherit" }} />
+                    <MarkerArrowDown style={{ color: "inherit" }} />
                   ) : (
-                    <ChevronRight style={{ color: "inherit" }} />
+                    <MarkerArrowRight style={{ color: "inherit" }} />
                   )
                 }
                 // tooltip={bodyOpen ? { content: "Collapse" } : { content: "Expand" }}
