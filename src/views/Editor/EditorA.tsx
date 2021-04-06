@@ -16,11 +16,12 @@ import QuickAddMenu from "./QuickAddMenu";
 import { randomString } from "kaleidoscope/src/utils";
 import { Button, ButtonType } from "kaleidoscope/src";
 import { IReactComponent } from "mobx-react";
+import Accordion from "./Accordion/AccordionA";
 
 class Editor extends React.Component {
   state = {
     accordionWidgets1: [{ id: randomString() }],
-    accordionWidgets2: [],
+    accordionWidgets2: [{ id: randomString() }],
   };
 
   addAccordion1 = (index: number = this.state.accordionWidgets1.length) => {
@@ -92,14 +93,14 @@ class Editor extends React.Component {
               </h1>
               <p>Prepared for Billie Danish</p>
               <p>by Sally Fields — sallyfields@signify.com</p>
-              {this.state.accordionWidgets1.map((accordionWidgetItem, index) => (
+              {/* {this.state.accordionWidgets1.map((accordionWidgetItem, index) => (
                 <AccordionCard
                   key={accordionWidgetItem.id}
                   id={accordionWidgetItem.id}
                   addAccordion={() => this.addAccordion1(index)}
                   removeAccordion={() => this.removeAccordion1(accordionWidgetItem.id)}
                 ></AccordionCard>
-              ))}
+              ))} */}
               {/* <QuickAddMenu addAccordion={this.addAccordion1}></QuickAddMenu> */}
             </Block>
           </div>
@@ -117,12 +118,12 @@ class Editor extends React.Component {
             </p>
             <p>Read about our process below.</p>
             {this.state.accordionWidgets2.map((accordionWidgetItem, index) => (
-              <AccordionA
+              <AccordionCard
                 key={accordionWidgetItem.id}
                 id={accordionWidgetItem.id}
                 addAccordion={() => this.addAccordion2(index)}
                 removeAccordion={() => this.removeAccordion2(accordionWidgetItem.id)}
-              ></AccordionA>
+              ></AccordionCard>
             ))}
             <QuickAddMenu addAccordion={this.newAccordion}></QuickAddMenu>
           </Block>

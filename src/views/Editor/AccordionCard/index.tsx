@@ -13,7 +13,18 @@ import {
   Tooltip,
 } from "kaleidoscope/src";
 import Toolbar, { ToolbarButton } from "components/Toolbar";
-import { Bold, ChevronDown, ChevronRight, Delete, H1, H2, Images, Italic, Styles } from "kaleidoscope/src/global/icons";
+import {
+  Bold,
+  ChevronDown,
+  ChevronRight,
+  Copy,
+  Delete,
+  H1,
+  H2,
+  Images,
+  Italic,
+  Styles,
+} from "kaleidoscope/src/global/icons";
 import { ReactComponent as NewAccordion } from "assets/new-accordion.svg";
 import { ReactComponent as H3 } from "assets/h3.svg";
 import { ReactComponent as MarkerArrowRight } from "assets/marker-arrow-right.svg";
@@ -47,13 +58,23 @@ class Accordion extends Component<AccordionWidgetProps> {
     bodyContentSelected: false,
     userTyping: false,
 
-    // STYLING
-    cardStyle: "simple",
+    // TEXT STYLING
     isBold: false,
     isItalic: false,
     isH1: false,
     isH2: false,
     isH3: true,
+
+    // CARD STYLING
+    cardStyle: "simple",
+    headerImageURL:
+      "https://images.unsplash.com/photo-1617032869717-206e809076a3?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1489&q=80",
+    headerImageTintColor: "rgba(0,0,0,0) 0%, #000000 100%",
+    headerBackgroundColor: "transparent",
+    headerTextColor: "#FFFFFF",
+    bodyBackgroundColorVisible: true,
+    bodyBackgroundColor: "#FFFFFF",
+    bodyTextColor: "#47535D",
 
     // CAPTURE TEXT
     headerHTML: "",
@@ -67,12 +88,13 @@ class Accordion extends Component<AccordionWidgetProps> {
     bodyOpen: false,
     bodyHeight: 0,
     bodyEntered: false,
-    bodyBackground: true,
   };
 
   widgetElementRef = createRef<HTMLDivElement>();
   accordionHeaderRef = createRef<HTMLDivElement>();
+  accordionHeaderContentRef = createRef<HTMLDivElement>();
   accordionHeaderImageWrapperRef = createRef<HTMLDivElement>();
+  accordionHeaderImageControls = createRef<HTMLDivElement>();
   accordionHeaderTextRef = createRef<HTMLDivElement>();
   accordionBodyTextRef = createRef<HTMLDivElement>();
   accordionBodyRef = createRef<HTMLDivElement>();
@@ -87,6 +109,9 @@ class Accordion extends Component<AccordionWidgetProps> {
       if (
         event.target === this.widgetElementRef.current ||
         event.target === this.accordionHeaderRef.current ||
+        event.target === this.accordionHeaderContentRef.current ||
+        event.target === this.accordionHeaderImageWrapperRef.current ||
+        event.target === this.accordionHeaderImageControls.current ||
         event.target === this.accordionHeaderTextRef.current ||
         event.target === this.accordionBodyRef.current ||
         event.target === this.accordionBodyWrapperRef.current ||
@@ -94,7 +119,7 @@ class Accordion extends Component<AccordionWidgetProps> {
         event.target === this.accordionButtonRef.current
       ) {
         this.setState({ widgetHovering: true });
-        console.log(this.state.widgetHovering);
+        console.log("Widget hovering");
       } else {
         this.setState({ widgetHovering: false });
       }
@@ -113,8 +138,14 @@ class Accordion extends Component<AccordionWidgetProps> {
   }
 
   // Open widget toolbar when selecting widget
-  handleWidgetSelected = () => {
-    this.setState({ widgetSelected: true, headerContentSelected: false, bodyContentSelected: false });
+  handleWidgetSelected = (event) => {
+    event.stopPropagation();
+    this.setState({
+      widgetSelected: true,
+      headerContentSelected: false,
+      bodyContentSelected: false,
+      headerImageSelected: false,
+    });
     console.log("Select widget");
   };
 
@@ -128,6 +159,8 @@ class Accordion extends Component<AccordionWidgetProps> {
     if (
       event.target === this.widgetElementRef.current ||
       event.target === this.accordionHeaderRef.current ||
+      event.target === this.accordionHeaderContentRef.current ||
+      event.target === this.accordionHeaderImageWrapperRef.current ||
       event.target === this.accordionHeaderTextRef.current ||
       event.target === this.accordionBodyRef.current ||
       event.target === this.accordionBodyWrapperRef.current ||
@@ -142,12 +175,14 @@ class Accordion extends Component<AccordionWidgetProps> {
   };
 
   handleImageSelected = (event) => {
+    event.stopPropagation();
     this.setState({
       headerImageSelected: true,
       widgetSelected: false,
       headerContentSelected: false,
       bodyContentSelected: false,
     });
+    console.log("Image Selected");
   };
 
   handleContentSelection = (event) => {
@@ -165,7 +200,7 @@ class Accordion extends Component<AccordionWidgetProps> {
   // Close widget toolbar when clicking into the widget content
   handleContentClick = (event) => {
     event.stopPropagation();
-    this.setState({ widgetSelected: false });
+    this.setState({ widgetSelected: false, headerImageSelected: false });
   };
 
   // Close all toolbars when clicking outside of the widget
@@ -214,6 +249,12 @@ class Accordion extends Component<AccordionWidgetProps> {
     if (event.key === "Tab" && this.state.widgetSelected === true) {
       this.setState({ widgetSelected: false });
       this.widgetElementRef.current.blur();
+    } else if (event.key === "Enter" && this.state.widgetSelected === true) {
+      this.setState({ widgetSelected: false });
+      this.widgetElementRef.current.blur();
+      setTimeout(() => {
+        this.accordionHeaderTextRef.current.focus();
+      }, 300);
     }
   };
 
@@ -260,11 +301,31 @@ class Accordion extends Component<AccordionWidgetProps> {
     document.execCommand("insertHTML", false, text);
   };
 
+  // STYLE PANEL OPTIONS
   setCardStyle = (optionValue) => {
     if (optionValue === "simple") {
       this.setState({ cardStyle: "simple", headerImageEntered: false });
+      // this.handleBodyBackgroundColor(false);
     } else if (optionValue === "visual") {
-      this.setState({ cardStyle: "visual" });
+      this.setState({
+        cardStyle: "visual",
+        bodyBackgroundColor: "#FFFFFF",
+      });
+      // this.handleBodyBackgroundColor(true);
+    }
+  };
+
+  handleHeaderBackgroundImage = (value) => {
+    this.setState({ headerImageURL: value });
+  };
+
+  handleBodyBackgroundColor = (isActive) => {
+    if (isActive === true) {
+      this.setState({ bodyBackgroundColorVisible: true, bodyBackgroundColor: "#FFFFFF" });
+      console.log("true");
+    } else if (isActive === false) {
+      this.setState({ bodyBackgroundColorVisible: false, bodyBackgroundColor: "transparent" });
+      console.log("false");
     }
   };
 
@@ -275,7 +336,14 @@ class Accordion extends Component<AccordionWidgetProps> {
 
     //   return headerHeight;
     // }
-    const { bodyOpen, cardStyle } = this.state;
+    const {
+      bodyOpen,
+      cardStyle,
+      headerImageURL,
+      headerImageTintColor,
+      bodyBackgroundColorVisible,
+      bodyBackgroundColor,
+    } = this.state;
 
     return (
       <>
@@ -295,7 +363,31 @@ class Accordion extends Component<AccordionWidgetProps> {
               selectedValue={cardStyle}
               onClickHandler={this.setCardStyle}
               theme={SegmentedControlTheme.Dark}
-            ></SegmentedControl>
+            />
+            {/* <Toggle
+              value={bodyBackgroundColorVisible}
+              theme={ToggleTheme.Dark}
+              label="Content background"
+              onChange={this.handleBodyBackgroundColor}
+            /> */}
+            {/* {cardStyle === "visual" && (
+              <>
+                <TextInput
+                  theme={TextInputTheme.Dark}
+                  label="Content background color"
+                  // labelHidden={true}
+                  value={bodyBackgroundColor}
+                  onChange={(value) => this.setState({ bodyBackgroundColor: value })}
+                />
+
+                <TextInput
+                  theme={TextInputTheme.Dark}
+                  label="Tint color"
+                  value={headerImageTintColor}
+                  onChange={(value) => this.setState({ headerImageTintColor: value })}
+                />
+              </>
+            )} */}
           </Popover>
           {/* <ToolbarButton
             icon={<NewAccordion />}
@@ -315,7 +407,12 @@ class Accordion extends Component<AccordionWidgetProps> {
               theme={PopoverTheme.Dark}
               button={(buttonProps) => <ToolbarButton icon={<Images />} {...buttonProps} />}
             >
-              <TextInput label="Background image URL" theme={TextInputTheme.Dark}></TextInput>
+              <TextInput
+                label="Background image URL"
+                theme={TextInputTheme.Dark}
+                value={headerImageURL}
+                onChange={(value) => this.setState({ headerImageURL: value })}
+              />
             </Popover>
           </Toolbar>
         )}
@@ -369,14 +466,20 @@ class Accordion extends Component<AccordionWidgetProps> {
           // onFocus bubbles up
           onFocus={this.handleWidgetFocus}
           onKeyDown={this.handleWidgetTabKeyDown}
-          // onPointerMove={this.handleWidgetHover}
+          style={{
+            border: cardStyle === "visual" ? "1px solid rgba(129,162,178, 0.25)" : 0,
+          }}
+          onPointerMove={this.handleWidgetHover}
         >
           {/* Accordion header */}
           <div
             className="accordion-card-widget__header"
             ref={this.accordionHeaderRef}
-            onClick={this.handleImageSelected}
-            onPointerMove={this.handleWidgetHover}
+            onClick={this.handleWidgetSelected}
+            style={{
+              background: cardStyle === "visual" ? "center / cover url(" + headerImageURL + ")" : "",
+              color: cardStyle === "visual" ? "white" : "inherit",
+            }}
           >
             <div
               className="accordion-card-widget__header-image-controls-transition-wrapper"
@@ -384,7 +487,7 @@ class Accordion extends Component<AccordionWidgetProps> {
                 height: this.state.headerImageEntered ? "auto" : this.state.headerImageHeight,
                 opacity: this.state.headerImageEntered ? 1 : 0,
               }}
-              ref={this.accordionHeaderImageWrapperRef}
+              onPointerMove={this.handleWidgetHover}
             >
               <CSSTransition
                 timeout={AnimationDuration.Short}
@@ -398,30 +501,77 @@ class Accordion extends Component<AccordionWidgetProps> {
                   forceReflow(this.accordionHeaderImageWrapperRef.current);
                 }}
               >
-                <div className="accordion-card-widget__header-image-controls">
-                  {this.context.imageButtonType === "Text" && (
-                    <Button
-                      className="accordion-card-widget__header-image-text-button"
-                      type={ButtonType.Secondary}
-                      size={ButtonSize.Small}
-                    >
-                      Swap image
-                    </Button>
-                  )}
-                  {this.context.imageButtonType === "Icon" && (
-                    <IconButton
-                      className="accordion-card-widget__header-image-icon-button"
-                      icon={<Images />}
-                      type={ButtonType.Secondary}
-                      size={ButtonSize.Small}
-                      tooltip={{ content: "Swap image" }}
-                    />
-                  )}
+                <div
+                  className="accordion-card-widget__header-image-controls-wrapper"
+                  onClick={this.handleWidgetSelected}
+                  onPointerMove={this.handleWidgetHover}
+                  ref={this.accordionHeaderImageWrapperRef}
+                >
+                  <div
+                    className="accordion-card-widget__header-image-controls"
+                    ref={this.accordionHeaderImageControls}
+                    onClick={this.handleImageSelected}
+                  >
+                    {this.context.imageButtonType === "Text" && (
+                      <Popover
+                        offset={8}
+                        theme={PopoverTheme.Dark}
+                        button={(buttonProps) => (
+                          <Button
+                            className="accordion-card-widget__header-image-text-button"
+                            type={ButtonType.Secondary}
+                            size={ButtonSize.Small}
+                            {...buttonProps}
+                          >
+                            Swap image
+                          </Button>
+                        )}
+                      >
+                        <TextInput
+                          theme={TextInputTheme.Dark}
+                          label="Background Image"
+                          value={headerImageURL}
+                          onChange={(value) => this.setState({ headerImageURL: value })}
+                        />
+                      </Popover>
+                    )}
+                    {this.context.imageButtonType === "Icon" && (
+                      <Popover
+                        offset={8}
+                        theme={PopoverTheme.Dark}
+                        button={(buttonProps) => (
+                          <IconButton
+                            className="accordion-card-widget__header-image-icon-button"
+                            icon={<Images />}
+                            type={ButtonType.Secondary}
+                            size={ButtonSize.Small}
+                            tooltip={{ content: "Swap image" }}
+                            {...buttonProps}
+                          />
+                        )}
+                      >
+                        <TextInput
+                          theme={TextInputTheme.Dark}
+                          label="Background Image"
+                          value={headerImageURL}
+                          onChange={(value) => this.setState({ headerImageURL: value })}
+                        />
+                      </Popover>
+                    )}
+                  </div>
                 </div>
               </CSSTransition>
             </div>
             {/* Accordion header button */}
-            <div className="accordion-card-widget__header-content" onPointerMove={this.handleWidgetHover}>
+            <div
+              className="accordion-card-widget__header-content"
+              style={{
+                background: cardStyle === "visual" ? "linear-gradient(180deg, " + headerImageTintColor + ")" : "none",
+                padding: cardStyle === "visual" ? "8px 16px" : "8px",
+              }}
+              onPointerMove={this.handleWidgetHover}
+              ref={this.accordionHeaderContentRef}
+            >
               <ContentEditable
                 className={classNames("accordion-card-widget__header-text", {
                   "accordion-card-widget__header-text--h1": this.state.isH1,
@@ -431,11 +581,12 @@ class Accordion extends Component<AccordionWidgetProps> {
                   "accordion-card-widget__header-text--italic": this.state.isItalic,
                 })}
                 innerRef={this.accordionHeaderTextRef}
-                placeholder="Accordion heading"
+                placeholder="Add a heading"
                 html={this.state.headerHTML}
                 onChange={this.handleHeaderChange}
                 onKeyDown={this.handleKeyDown}
                 onPaste={this.pasteAsPlainText}
+                onClick={this.handleContentClick}
               />
               <div
                 className={classNames("accordion-card-widget__header-button", {
@@ -444,14 +595,15 @@ class Accordion extends Component<AccordionWidgetProps> {
                   "accordion-card-widget__header-button--h3": this.state.isH3,
                 })}
                 ref={this.accordionButtonRef}
+                onClick={this.handleContentClick}
               >
                 <IconButton
                   size={ButtonSize.Small}
                   icon={
                     bodyOpen ? (
-                      <MarkerArrowDown style={{ color: "white" }} />
+                      <MarkerArrowDown style={{ color: cardStyle === "visual" ? "white" : "inherit" }} />
                     ) : (
-                      <MarkerArrowRight style={{ color: "white" }} />
+                      <MarkerArrowRight style={{ color: cardStyle === "visual" ? "white" : "inherit" }} />
                     )
                   }
                   // tooltip={bodyOpen ? { content: "Collapse" } : { content: "Expand" }}
@@ -485,7 +637,10 @@ class Accordion extends Component<AccordionWidgetProps> {
                 className="accordion-card-widget__body"
                 onClick={this.handleContentClick}
                 ref={this.accordionBodyRef}
-                style={{ backgroundColor: this.state.bodyBackground ? "@grey10" : "transparent" }}
+                style={{
+                  backgroundColor: cardStyle === "visual" ? bodyBackgroundColor : "transparent",
+                  padding: cardStyle === "visual" ? "16px" : "8px",
+                }}
               >
                 <ContentEditable
                   className="accordion-card-widget__body-text"
