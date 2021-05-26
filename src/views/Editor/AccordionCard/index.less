@@ -49,6 +49,7 @@
   gap: 0;
   margin: -@space-s;
   background-size: cover;
+  transition: color @duration-s @bezier-standard;
 }
 
 .accordion-card-widget__header-image-controls {
@@ -156,7 +157,7 @@
 }
 .accordion-card-widget__header-image-controls-transition-wrapper {
   overflow: hidden;
-  transition: height @duration-m @bezier-fastout-slowin, opacity @duration-m @bezier-standard;
+  transition: height @duration-m @bezier-fastout-slowin, opacity @duration-m @bezier-fastout-slowin;
 }
 
 .accordion-card-widget__body-transition-wrapper {
@@ -186,4 +187,14 @@
 .popover__panel-content {
   display: grid;
   gap: @space-m;
+}
+
+.toggle-button__label,
+.control__label {
+  .space-stack-xs;
+  .text-small-label;
+  color: white;
+  min-height: @space-s;
+  display: block;
+  text-align: start;
 }

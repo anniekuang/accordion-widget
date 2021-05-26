@@ -29,4 +29,9 @@ export const appConfigOptions = {
     value: "Text",
     options: ["Text", "Icon", "Toolbar"],
   },
+  newAccordionIs: {
+    type: ConfigType.SegmentedControl,
+    value: "Collapsed",
+    options: ["Expanded", "Collapsed"],
+  },
 };

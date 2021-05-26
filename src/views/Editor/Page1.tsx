@@ -1,22 +1,10 @@
-import React, {
-  ComponentClass,
-  ComponentElement,
-  createRef,
-  FC,
-  LegacyRef,
-  ReactComponentElement,
-  ReactElement,
-} from "react";
+import React from "react";
 import { Helmet } from "react-helmet";
 import Block from "./Block";
 import EditorNavbar from "./EditorNavbar";
-import AccordionA from "./Accordion/AccordionA";
 import AccordionCard from "./AccordionCard";
 import QuickAddMenu from "./QuickAddMenu";
 import { randomString } from "kaleidoscope/src/utils";
-import { Button, ButtonType } from "kaleidoscope/src";
-import { IReactComponent } from "mobx-react";
-import Accordion from "./Accordion/AccordionA";
 
 class Editor extends React.Component {
   state = {

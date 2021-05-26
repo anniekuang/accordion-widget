@@ -2,6 +2,7 @@ import {
   Button,
   ButtonSize,
   ButtonType,
+  ColorPalette,
   IconButton,
   Popover,
   PopoverTheme,
@@ -10,13 +11,12 @@ import {
   TextInput,
   TextInputTheme,
   Toggle,
-  Tooltip,
 } from "kaleidoscope/src";
 import Toolbar, { ToolbarButton } from "components/Toolbar";
 import {
+  AlignCenter,
+  AlignLeft,
   Bold,
-  ChevronDown,
-  ChevronRight,
   Copy,
   Delete,
   H1,
@@ -42,6 +42,8 @@ interface AccordionWidgetProps {
   id: string;
   addAccordion: () => void;
   removeAccordion: () => void;
+  headerText?: string;
+  bodyText?: string;
 }
 
 class Accordion extends Component<AccordionWidgetProps> {
@@ -70,24 +72,27 @@ class Accordion extends Component<AccordionWidgetProps> {
     headerImageURL:
       "https://images.unsplash.com/photo-1617032869717-206e809076a3?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1489&q=80",
     headerImageTintColor: "rgba(0,0,0,0) 0%, #000000 100%",
-    headerBackgroundColor: "transparent",
+    headerColorVisible: true,
+    headerColor: "transparent",
+    selectedHeaderColorValue: 1,
     headerTextColor: "#FFFFFF",
     bodyBackgroundColorVisible: true,
     bodyBackgroundColor: "#FFFFFF",
     bodyTextColor: "#47535D",
+    buttonAlignment: "left",
 
     // CAPTURE TEXT
-    headerHTML: "",
-    bodyHTML: "",
+    headerHTML: this.props.headerText || "",
+    bodyHTML: this.props.bodyText || "",
 
     // HEADER CSS TRANSITION
     headerImageHeight: 0,
     headerImageEntered: false,
 
     // BODY CSS TRANSITION
-    bodyOpen: false,
+    bodyOpen: this.context.newAccordionIs === "Collapsed" ? false : true,
     bodyHeight: 0,
-    bodyEntered: false,
+    bodyEntered: this.context.newAccordionIs === "Collapsed" ? false : true,
   };
 
   widgetElementRef = createRef<HTMLDivElement>();
@@ -304,14 +309,31 @@ class Accordion extends Component<AccordionWidgetProps> {
   // STYLE PANEL OPTIONS
   setCardStyle = (optionValue) => {
     if (optionValue === "simple") {
-      this.setState({ cardStyle: "simple", headerImageEntered: false });
+      this.setState({
+        cardStyle: "simple",
+        headerImageEntered: false,
+        buttonAlignment: "left",
+        bodyBackgroundColor: `rgba(${this.state.headerColor}, 0.1)`,
+      });
       // this.handleBodyBackgroundColor(false);
     } else if (optionValue === "visual") {
       this.setState({
         cardStyle: "visual",
         bodyBackgroundColor: "#FFFFFF",
+        buttonAlignment: "right",
       });
       // this.handleBodyBackgroundColor(true);
+    }
+  };
+
+  setButtonAlignment = (optionValue) => {
+    if (optionValue === "left") {
+      this.setState({ buttonAlignment: "left" });
+      // this.handleBodyBackgroundColor(false);
+    } else if (optionValue === "right") {
+      this.setState({
+        buttonAlignment: "right",
+      });
     }
   };
 
@@ -329,6 +351,19 @@ class Accordion extends Component<AccordionWidgetProps> {
     }
   };
 
+  handleHeaderColorVisible = (isActive) => {
+    if (isActive === true) {
+      this.setState({ headerColorVisible: isActive, headerColor: "#00A99D" });
+    } else if (isActive === false) {
+      this.setState({ headerColorVisible: isActive });
+    }
+  };
+
+  handleHeaderColor = (color) => {
+    this.setState({ headerColor: color.value, selectedHeaderColorValue: color.themeIndex });
+    console.log(color.value);
+  };
+
   render() {
     // Attempt to calculate the Header content height, but is unnecessary without a way to change the text styling
     // function calcHeaderHeight() {
@@ -339,8 +374,11 @@ class Accordion extends Component<AccordionWidgetProps> {
     const {
       bodyOpen,
       cardStyle,
+      buttonAlignment,
       headerImageURL,
       headerImageTintColor,
+      headerColorVisible,
+      headerColor,
       bodyBackgroundColorVisible,
       bodyBackgroundColor,
     } = this.state;
@@ -355,7 +393,7 @@ class Accordion extends Component<AccordionWidgetProps> {
             button={(buttonProps) => <ToolbarButton icon={<Styles />} {...buttonProps} />}
           >
             <SegmentedControl
-              label="Style"
+              label="Accordion style"
               options={[
                 { label: "Simple", value: "simple" },
                 { label: "Visual", value: "visual" },
@@ -364,6 +402,68 @@ class Accordion extends Component<AccordionWidgetProps> {
               onClickHandler={this.setCardStyle}
               theme={SegmentedControlTheme.Dark}
             />
+            {/* <div>
+              <Toggle
+                value={headerColorVisible}
+                theme={ToggleTheme.Dark}
+                label="Header color"
+                onChange={this.handleHeaderColorVisible}
+              />
+              {headerColorVisible && (
+                <>
+                  <ColorPalette
+                    presetColors={[
+                      {
+                        value: "#00A99D",
+                        themeIndex: 1,
+                      },
+                      {
+                        value: "#8054F4",
+                        themeIndex: 2,
+                      },
+                      {
+                        value: "#00ABFF",
+                        themeIndex: 3,
+                      },
+                      {
+                        value: "#FFB953",
+                        themeIndex: 4,
+                      },
+                      {
+                        value: "#FF4651",
+                        themeIndex: 5,
+                      },
+                      {
+                        value: "#45525E",
+                        themeIndex: 6,
+                      },
+                      {
+                        value: "#242C39",
+                        themeIndex: 7,
+                      },
+                      {
+                        value: "#FFFFFFF",
+                        themeIndex: 8,
+                      },
+                    ]}
+                    selectedThemeIndex={this.state.selectedHeaderColorValue}
+                    handleColorChange={this.handleHeaderColor}
+                  />
+                </>
+              )}
+            </div> */}
+            {cardStyle === "simple" && (
+              <SegmentedControl
+                label="Button alignment"
+                options={[
+                  { label: "Align left", value: "left", icon: <AlignLeft /> },
+                  { label: "Align right", value: "right", icon: <AlignCenter /> },
+                ]}
+                selectedValue={buttonAlignment}
+                onClickHandler={this.setButtonAlignment}
+                theme={SegmentedControlTheme.Dark}
+              />
+            )}
             {/* <Toggle
               value={bodyBackgroundColorVisible}
               theme={ToggleTheme.Dark}
@@ -567,11 +667,38 @@ class Accordion extends Component<AccordionWidgetProps> {
               className="accordion-card-widget__header-content"
               style={{
                 background: cardStyle === "visual" ? "linear-gradient(180deg, " + headerImageTintColor + ")" : "none",
+                backgroundColor: headerColorVisible ? headerColor : "transparent",
                 padding: cardStyle === "visual" ? "8px 16px" : "8px",
               }}
               onPointerMove={this.handleWidgetHover}
               ref={this.accordionHeaderContentRef}
             >
+              {buttonAlignment === "left" && (
+                <div
+                  className={classNames("accordion-card-widget__header-button", {
+                    "accordion-card-widget__header-button--h1": this.state.isH1,
+                    "accordion-card-widget__header-button--h2": this.state.isH2,
+                    "accordion-card-widget__header-button--h3": this.state.isH3,
+                  })}
+                  ref={this.accordionButtonRef}
+                  onClick={this.handleContentClick}
+                >
+                  <IconButton
+                    size={ButtonSize.Small}
+                    icon={
+                      bodyOpen ? (
+                        <MarkerArrowDown style={{ color: cardStyle === "visual" ? "white" : "inherit" }} />
+                      ) : (
+                        <MarkerArrowRight style={{ color: cardStyle === "visual" ? "white" : "inherit" }} />
+                      )
+                    }
+                    // tooltip={bodyOpen ? { content: "Collapse" } : { content: "Expand" }}
+                    aria-label={bodyOpen ? "Collapse" : "Expand"}
+                    onClick={this.toggleContent}
+                    // tabIndex={-1}
+                  />
+                </div>
+              )}
               <ContentEditable
                 className={classNames("accordion-card-widget__header-text", {
                   "accordion-card-widget__header-text--h1": this.state.isH1,
@@ -588,30 +715,32 @@ class Accordion extends Component<AccordionWidgetProps> {
                 onPaste={this.pasteAsPlainText}
                 onClick={this.handleContentClick}
               />
-              <div
-                className={classNames("accordion-card-widget__header-button", {
-                  "accordion-card-widget__header-button--h1": this.state.isH1,
-                  "accordion-card-widget__header-button--h2": this.state.isH2,
-                  "accordion-card-widget__header-button--h3": this.state.isH3,
-                })}
-                ref={this.accordionButtonRef}
-                onClick={this.handleContentClick}
-              >
-                <IconButton
-                  size={ButtonSize.Small}
-                  icon={
-                    bodyOpen ? (
-                      <MarkerArrowDown style={{ color: cardStyle === "visual" ? "white" : "inherit" }} />
-                    ) : (
-                      <MarkerArrowRight style={{ color: cardStyle === "visual" ? "white" : "inherit" }} />
-                    )
-                  }
-                  // tooltip={bodyOpen ? { content: "Collapse" } : { content: "Expand" }}
-                  aria-label={bodyOpen ? "Collapse" : "Expand"}
-                  onClick={this.toggleContent}
-                  // tabIndex={-1}
-                />
-              </div>
+              {buttonAlignment === "right" && (
+                <div
+                  className={classNames("accordion-card-widget__header-button", {
+                    "accordion-card-widget__header-button--h1": this.state.isH1,
+                    "accordion-card-widget__header-button--h2": this.state.isH2,
+                    "accordion-card-widget__header-button--h3": this.state.isH3,
+                  })}
+                  ref={this.accordionButtonRef}
+                  onClick={this.handleContentClick}
+                >
+                  <IconButton
+                    size={ButtonSize.Small}
+                    icon={
+                      bodyOpen ? (
+                        <MarkerArrowDown style={{ color: cardStyle === "visual" ? "white" : "inherit" }} />
+                      ) : (
+                        <MarkerArrowRight style={{ color: cardStyle === "visual" ? "white" : "inherit" }} />
+                      )
+                    }
+                    // tooltip={bodyOpen ? { content: "Collapse" } : { content: "Expand" }}
+                    aria-label={bodyOpen ? "Collapse" : "Expand"}
+                    onClick={this.toggleContent}
+                    // tabIndex={-1}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -638,14 +767,14 @@ class Accordion extends Component<AccordionWidgetProps> {
                 onClick={this.handleContentClick}
                 ref={this.accordionBodyRef}
                 style={{
-                  backgroundColor: cardStyle === "visual" ? bodyBackgroundColor : "transparent",
-                  padding: cardStyle === "visual" ? "16px" : "8px",
+                  backgroundColor: cardStyle === "visual" ? bodyBackgroundColor : `rgba(${headerColor}, 0.1)`,
+                  padding: cardStyle === "visual" ? "16px" : buttonAlignment === "left" ? "8px 8px 8px 48px" : "8px",
                 }}
               >
                 <ContentEditable
                   className="accordion-card-widget__body-text"
                   innerRef={this.accordionBodyTextRef}
-                  placeholder="Add content here, or press Cmd/Ctrl + Enter for a new accordion"
+                  placeholder="Add content here, or press Cmd + Enter for a new item"
                   html={this.state.bodyHTML}
                   onChange={this.handleBodyChange}
                   onKeyDown={this.handleKeyDown}
