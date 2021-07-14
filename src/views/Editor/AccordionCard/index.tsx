@@ -224,13 +224,14 @@ class Accordion extends Component<AccordionWidgetProps> {
 
     map[event.key] = event.type == "keydown";
 
-    if (map["Shift"] + map["Control"]) {
+    if (map["Shift"] && map["Control"]) {
+      // This doesn't work
       event.preventDefault();
       console.log("clone");
-      // this.props.addAccordion();
     }
 
-    if (event.metaKey && event.ShiftKey && (map["+"] || map["="])) {
+    if (event.metaKey && event.ShiftKey && (map["+"] || map["="] || map["-"])) {
+      // This doesn't work
       // Expand / collapse accordion
       event.preventDefault();
       this.toggleContent();
