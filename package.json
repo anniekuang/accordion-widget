@@ -29,6 +29,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "hotkeys-js": "^3.8.7",
     "kaleidoscope": "git@github.com:qwilr/kaleidoscope-components.git#2a725ac",
     "mobx": "5.9.4",
     "mobx-react": "5.4.4",

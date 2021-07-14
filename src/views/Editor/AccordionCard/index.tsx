@@ -37,6 +37,7 @@ import { AnimationDuration } from "kaleidoscope/src/styles/Animations";
 import forceReflow from "kaleidoscope/src/utils/forceReflow";
 import { ConfigContext } from "views/App/AppConfig";
 import { ToggleTheme } from "kaleidoscope/src/global/pieces/Toggle/Toggle";
+import hotkeys from "hotkeys-js";
 
 interface AccordionWidgetProps {
   id: string;
@@ -129,6 +130,7 @@ class Accordion extends Component<AccordionWidgetProps> {
         this.setState({ widgetHovering: false });
       }
     });
+    document.getElementById("accordion-header").addEventListener("keydown", this.handleKeyDown);
 
     setTimeout(() => {
       this.accordionHeaderTextRef.current.focus();
@@ -225,29 +227,57 @@ class Accordion extends Component<AccordionWidgetProps> {
     this.setState({ bodyOpen: true });
   };
 
+  // handleKeyDown = (event) => {
+  //   var map = {};
+
+  //   map[event.key] = event.type == "keydown";
+
+  //   if ((event.metaKey || event.ctrlKey) && map["Enter"]) {
+  //     this.props.addAccordion();
+  //     this.setState({ widgetHovering: false });
+  //     this.accordionHeaderTextRef.current.blur();
+  //   } else if ((event.metaKey || event.ctrlKey) && map["e"]) {
+  //     event.preventDefault();
+  //     this.toggleContent();
+  //     console.log(this.state.bodyOpen);
+  //   } else if (map["Enter"]) {
+  //     this.setState({ widgetHovering: false });
+  //     this.accordionHeaderTextRef.current.blur();
+  //     this.setState({ bodyOpen: true });
+  //     // this.accordionBodyTextRef.current.focus();
+  //     setTimeout(() => {
+  //       this.accordionBodyTextRef.current.focus();
+  //     }, 300);
+  //   } else if (map["Backspace"] && this.state.headerHTML === "") {
+  //     this.props.removeAccordion();
+  //   } else {
+  //     // Hide widget selection border when user starts typing
+  //     this.setState({ widgetHovering: false });
+  //   }
+  // };
+
   handleKeyDown = (event) => {
     var map = {};
 
     map[event.key] = event.type == "keydown";
+    console.log(map);
 
-    if ((event.metaKey || event.ctrlKey) && map["Enter"]) {
-      this.props.addAccordion();
-      this.setState({ widgetHovering: false });
-      this.accordionHeaderTextRef.current.blur();
-    } else if (map["Enter"]) {
-      this.setState({ widgetHovering: false });
-      this.accordionHeaderTextRef.current.blur();
-      this.setState({ bodyOpen: true });
-      // this.accordionBodyTextRef.current.focus();
-      setTimeout(() => {
-        this.accordionBodyTextRef.current.focus();
-      }, 300);
-    } else if (map["Backspace"] && this.state.headerHTML === "") {
-      this.props.removeAccordion();
-    } else {
-      // Hide widget selection border when user starts typing
-      this.setState({ widgetHovering: false });
-    }
+    // if (event.ctrlKey && map["e"]) {
+    //   console.log(map);
+    //   console.log("Success 1");
+    // } else if (map["Control"] && map["e"]) {
+    //   console.log(map);
+    //   console.log("Success 2");
+    // }
+    // } else if (map["Control"]) {
+    //   console.log("Control");
+    // } else if (map["e"]) {
+    //   console.log("E");
+    // }
+  };
+
+  handleExpandAccordion = (event, handler) => {
+    console.log("Expand");
   };
 
   handleWidgetTabKeyDown = (event) => {
@@ -692,8 +722,8 @@ class Accordion extends Component<AccordionWidgetProps> {
                         <MarkerArrowRight style={{ color: cardStyle === "visual" ? "white" : "inherit" }} />
                       )
                     }
-                    // tooltip={bodyOpen ? { content: "Collapse" } : { content: "Expand" }}
-                    aria-label={bodyOpen ? "Collapse" : "Expand"}
+                    tooltip={bodyOpen ? { content: "Collapse (Cmd + E)" } : { content: "Expand (Cmd + E)" }}
+                    aria-label={"Toggle"}
                     onClick={this.toggleContent}
                     // tabIndex={-1}
                   />
@@ -707,11 +737,12 @@ class Accordion extends Component<AccordionWidgetProps> {
                   "accordion-card-widget__header-text--bold": this.state.isBold,
                   "accordion-card-widget__header-text--italic": this.state.isItalic,
                 })}
+                id={"accordion-header"}
                 innerRef={this.accordionHeaderTextRef}
                 placeholder="Add a heading"
                 html={this.state.headerHTML}
                 onChange={this.handleHeaderChange}
-                onKeyDown={this.handleKeyDown}
+                // onKeyDown={this.handleKeyDown}
                 onPaste={this.pasteAsPlainText}
                 onClick={this.handleContentClick}
               />

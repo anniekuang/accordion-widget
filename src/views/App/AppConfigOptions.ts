@@ -16,10 +16,10 @@ export const appConfigOptions = {
   //   min: 0,
   //   max: 10,
   // },
-  // exampleText: {
-  //   type: ConfigType.TextInput,
-  //   value: "Example",
-  // },
+  shortcutKey: {
+    type: ConfigType.TextInput,
+    value: "Example",
+  },
   // exampleNumber: {
   //   type: ConfigType.NumberInput,
   //   value: 1,
