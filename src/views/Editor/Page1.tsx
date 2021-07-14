@@ -10,6 +10,7 @@ class Editor extends React.Component {
   state = {
     accordionWidgets1: [{ id: randomString() }],
     accordionWidgets2: [{ id: randomString() }],
+    accordionClone: [],
   };
 
   addAccordion1 = (index: number = this.state.accordionWidgets1.length) => {
@@ -48,6 +49,20 @@ class Editor extends React.Component {
     this.setState({
       accordionWidgets2: this.state.accordionWidgets2.filter((accordionWidget) => accordionWidget.id !== id),
     });
+  };
+
+  cloneAccordion2 = (id: string, index: number = this.state.accordionWidgets2.length) => {
+    console.log("clone");
+    this.setState({
+      // accordionClone: this.state.accordionWidgets2.filter((accordionWidget) => accordionWidget.id),
+      accordionWidgets2: [
+        ...this.state.accordionWidgets2.slice(0, index + 1),
+        ...this.state.accordionWidgets2.filter((accordionWidget) => accordionWidget.id),
+        ...this.state.accordionWidgets2.slice(index + 1, this.state.accordionWidgets2.length),
+      ],
+    });
+    // var clone = accordionWidgets2.slice(index);
+    // this.addAccordion2(index)
   };
 
   render() {
@@ -111,6 +126,7 @@ class Editor extends React.Component {
                 id={accordionWidgetItem.id}
                 addAccordion={() => this.addAccordion2(index)}
                 removeAccordion={() => this.removeAccordion2(accordionWidgetItem.id)}
+                // cloneAccordion={() => this.cloneAccordion2(accordionWidgetItem.id, index)}
               ></AccordionCard>
             ))}
             <QuickAddMenu addAccordion={this.newAccordion}></QuickAddMenu>

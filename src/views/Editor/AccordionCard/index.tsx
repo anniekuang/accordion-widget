@@ -38,11 +38,13 @@ import forceReflow from "kaleidoscope/src/utils/forceReflow";
 import { ConfigContext } from "views/App/AppConfig";
 import { ToggleTheme } from "kaleidoscope/src/global/pieces/Toggle/Toggle";
 import hotkeys from "hotkeys-js";
+import TruncatedText from "kaleidoscope/src/global/pieces/Token/TruncatedText";
 
 interface AccordionWidgetProps {
   id: string;
   addAccordion: () => void;
   removeAccordion: () => void;
+  cloneAccordion?: () => void;
   headerText?: string;
   bodyText?: string;
 }
@@ -110,27 +112,10 @@ class Accordion extends Component<AccordionWidgetProps> {
   componentDidMount() {
     document.body.addEventListener("click", this.handleOuterClick);
     document.addEventListener("selectionchange", this.handleContentSelection);
-    document.addEventListener("pointermove", (event) => {
-      // This would be better handled on the element itself using onPointerMove
-      if (
-        event.target === this.widgetElementRef.current ||
-        event.target === this.accordionHeaderRef.current ||
-        event.target === this.accordionHeaderContentRef.current ||
-        event.target === this.accordionHeaderImageWrapperRef.current ||
-        event.target === this.accordionHeaderImageControls.current ||
-        event.target === this.accordionHeaderTextRef.current ||
-        event.target === this.accordionBodyRef.current ||
-        event.target === this.accordionBodyWrapperRef.current ||
-        event.target === this.accordionBodyTextRef.current ||
-        event.target === this.accordionButtonRef.current
-      ) {
-        this.setState({ widgetHovering: true });
-        console.log("Widget hovering");
-      } else {
-        this.setState({ widgetHovering: false });
-      }
-    });
-    document.getElementById("accordion-header").addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("pointermove", this.handleWidgetHover);
+    // document.getElementById("accordion-header").addEventListener("keydown", this.handleKeyDown);
+    // document.getElementById("accordion-card-widget").addEventListener("keydown", this.handleKeyDown);
+    // document.addEventListener("keydown", this.handleKeyDown);
 
     setTimeout(() => {
       this.accordionHeaderTextRef.current.focus();
@@ -142,6 +127,9 @@ class Accordion extends Component<AccordionWidgetProps> {
   componentWillUnmount() {
     document.body.removeEventListener("click", this.handleOuterClick);
     document.removeEventListener("selectionchange", this.handleContentSelection);
+    document.addEventListener("pointermove", this.handleWidgetHover);
+    // document.removeEventListener("keydown", this.handleKeyDown);
+    // document.getElementById("accordion-card-widget").removeEventListener("keydown", this.handleKeyDown);
   }
 
   // Open widget toolbar when selecting widget
@@ -149,16 +137,19 @@ class Accordion extends Component<AccordionWidgetProps> {
     event.stopPropagation();
     this.setState({
       widgetSelected: true,
+      headerFocus: false,
       headerContentSelected: false,
-      bodyContentSelected: false,
       headerImageSelected: false,
+      bodyFocus: false,
+      bodyContentSelected: false,
     });
+    this.widgetElementRef.current.focus();
     console.log("Select widget");
   };
 
   handleWidgetFocus = (event) => {
     if (event.target === this.widgetElementRef.current) {
-      this.setState({ widgetSelected: true });
+      this.setState({ widgetSelected: true, headerFocus: false, bodyFocus: false });
     }
   };
 
@@ -168,6 +159,7 @@ class Accordion extends Component<AccordionWidgetProps> {
       event.target === this.accordionHeaderRef.current ||
       event.target === this.accordionHeaderContentRef.current ||
       event.target === this.accordionHeaderImageWrapperRef.current ||
+      event.target === this.accordionHeaderImageControls.current ||
       event.target === this.accordionHeaderTextRef.current ||
       event.target === this.accordionBodyRef.current ||
       event.target === this.accordionBodyWrapperRef.current ||
@@ -175,7 +167,7 @@ class Accordion extends Component<AccordionWidgetProps> {
       event.target === this.accordionButtonRef.current
     ) {
       this.setState({ widgetHovering: true });
-      console.log("Hover");
+      // console.log("Hover");
     } else {
       this.setState({ widgetHovering: false });
     }
@@ -227,54 +219,91 @@ class Accordion extends Component<AccordionWidgetProps> {
     this.setState({ bodyOpen: true });
   };
 
-  // handleKeyDown = (event) => {
-  //   var map = {};
-
-  //   map[event.key] = event.type == "keydown";
-
-  //   if ((event.metaKey || event.ctrlKey) && map["Enter"]) {
-  //     this.props.addAccordion();
-  //     this.setState({ widgetHovering: false });
-  //     this.accordionHeaderTextRef.current.blur();
-  //   } else if ((event.metaKey || event.ctrlKey) && map["e"]) {
-  //     event.preventDefault();
-  //     this.toggleContent();
-  //     console.log(this.state.bodyOpen);
-  //   } else if (map["Enter"]) {
-  //     this.setState({ widgetHovering: false });
-  //     this.accordionHeaderTextRef.current.blur();
-  //     this.setState({ bodyOpen: true });
-  //     // this.accordionBodyTextRef.current.focus();
-  //     setTimeout(() => {
-  //       this.accordionBodyTextRef.current.focus();
-  //     }, 300);
-  //   } else if (map["Backspace"] && this.state.headerHTML === "") {
-  //     this.props.removeAccordion();
-  //   } else {
-  //     // Hide widget selection border when user starts typing
-  //     this.setState({ widgetHovering: false });
-  //   }
-  // };
-
   handleKeyDown = (event) => {
     var map = {};
 
     map[event.key] = event.type == "keydown";
-    console.log(map);
 
-    // if (event.ctrlKey && map["e"]) {
-    //   console.log(map);
-    //   console.log("Success 1");
-    // } else if (map["Control"] && map["e"]) {
-    //   console.log(map);
-    //   console.log("Success 2");
-    // }
-    // } else if (map["Control"]) {
-    //   console.log("Control");
-    // } else if (map["e"]) {
-    //   console.log("E");
-    // }
+    if (map["Shift"] + map["Control"]) {
+      event.preventDefault();
+      console.log("clone");
+      // this.props.addAccordion();
+    }
+
+    if (event.metaKey && event.ShiftKey && (map["+"] || map["="])) {
+      // Expand / collapse accordion
+      event.preventDefault();
+      this.toggleContent();
+      console.log(this.state.bodyOpen);
+    }
+
+    // When focussed in header text area
+    if (this.state.headerFocus) {
+      if ((event.metaKey || event.ctrlKey) && map["Enter"]) {
+        // Create new empty accordion
+        this.props.addAccordion();
+        this.setState({ widgetHovering: false });
+        this.accordionHeaderTextRef.current.blur();
+        // } else if ((event.metaKey || event.ctrlKey) && map["e"]) {
+        //   // Expand / collapse accordion
+        //   event.preventDefault();
+        //   this.toggleContent();
+        //   console.log(this.state.bodyOpen);
+      } else if (map["Enter"]) {
+        // Move typing focus from heading to content
+        this.setState({ widgetHovering: false });
+        this.accordionHeaderTextRef.current.blur();
+        this.setState({ bodyOpen: true });
+        // this.handleBodyFocus();
+        // this.accordionBodyTextRef.current.focus();
+        setTimeout(() => {
+          this.accordionBodyTextRef.current.focus();
+        }, 300);
+      } else if ((map["Backspace"] && this.state.headerHTML === "") || map["ArrowUp"]) {
+        // Press backspace in heading
+        // this.props.removeAccordion();
+        event.preventDefault();
+        this.handleWidgetSelected(event);
+        // this.accordionHeaderTextRef.current.blur();
+      } else {
+        // Hide widget selection border when user starts typing
+        this.setState({ widgetHovering: false });
+        console.log("typing");
+      }
+    }
+
+    // When accordion widget is selected
+    if (this.state.widgetSelected) {
+      if (map["ArrowDown"]) {
+        console.log("down");
+        event.preventDefault();
+        // this.handleHeaderFocus();
+        this.accordionHeaderTextRef.current.focus();
+      } else if (map["Backspace"] || map["Delete"]) {
+        this.props.removeAccordion();
+      }
+    }
   };
+
+  // handleKeyDown = (event) => {
+  //   var map = {};
+
+  //   map[event.key] = event.type == "keydown";
+  //   console.log(map);
+
+  //   // if (event.ctrlKey && map["e"]) {
+  //   //   console.log(map);
+  //   //   console.log("Success 1");
+  //   // } else if (map["Control"] && map["e"]) {
+  //   //   console.log(map);
+  //   //   console.log("Success 2");
+  //   // }
+  //   // } else if (map["Control"]) {
+  //   //   console.log("Control");
+  //   // } else if (map["e"]) {
+  //   //   console.log("E");
+  //   // }
+  // };
 
   handleExpandAccordion = (event, handler) => {
     console.log("Expand");
@@ -291,6 +320,16 @@ class Accordion extends Component<AccordionWidgetProps> {
         this.accordionHeaderTextRef.current.focus();
       }, 300);
     }
+  };
+
+  handleHeaderFocus = () => {
+    this.accordionHeaderTextRef.current.focus();
+    this.setState({ headerFocus: true, bodyFocus: false, widgetSelected: false });
+  };
+
+  handleBodyFocus = () => {
+    this.accordionBodyTextRef.current.focus();
+    this.setState({ headerFocus: false, bodyFocus: true, widgetSelected: false });
   };
 
   handleHeaderChange = (event) => {
@@ -417,6 +456,8 @@ class Accordion extends Component<AccordionWidgetProps> {
       <>
         {/* Widget toolbar - START */}
         <Toolbar visible={this.state.widgetSelected} element={this.widgetElementRef.current}>
+          <ToolbarButton icon={<Copy />} onClick={this.props.cloneAccordion} />
+
           <Popover
             offset={8}
             theme={PopoverTheme.Dark}
@@ -589,13 +630,14 @@ class Accordion extends Component<AccordionWidgetProps> {
             "accordion-card-widget--selected": this.state.widgetSelected,
             "accordion-card-widget--hover": this.state.widgetHovering,
           })}
+          id={"accordion-card-widget"}
           ref={this.widgetElementRef}
           tabIndex={0}
           onClick={this.handleWidgetSelected}
           // onFocus now focusses everytime I click / tab inside children elements
           // onFocus bubbles up
           onFocus={this.handleWidgetFocus}
-          onKeyDown={this.handleWidgetTabKeyDown}
+          onKeyDown={this.handleKeyDown}
           style={{
             border: cardStyle === "visual" ? "1px solid rgba(129,162,178, 0.25)" : 0,
           }}
@@ -742,9 +784,12 @@ class Accordion extends Component<AccordionWidgetProps> {
                 placeholder="Add a heading"
                 html={this.state.headerHTML}
                 onChange={this.handleHeaderChange}
-                // onKeyDown={this.handleKeyDown}
+                onKeyDown={this.handleKeyDown}
                 onPaste={this.pasteAsPlainText}
                 onClick={this.handleContentClick}
+                onFocus={() => {
+                  this.setState({ headerFocus: true, bodyFocus: false, widgetSelected: false });
+                }}
               />
               {buttonAlignment === "right" && (
                 <div
@@ -810,6 +855,9 @@ class Accordion extends Component<AccordionWidgetProps> {
                   onChange={this.handleBodyChange}
                   onKeyDown={this.handleKeyDown}
                   onPaste={this.pasteAsPlainText}
+                  onFocus={() => {
+                    this.setState({ headerFocus: false, bodyFocus: true, widgetSelected: false });
+                  }}
                 />
               </div>
             </CSSTransition>
