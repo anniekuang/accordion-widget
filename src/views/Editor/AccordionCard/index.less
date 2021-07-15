@@ -37,6 +37,7 @@
   &--hover {
     box-shadow: 0 0 0 3px rgba(@blue, 0.25);
     border-radius: 7px;
+    cursor: pointer;
   }
 
   &--selected {
@@ -101,6 +102,7 @@
   display: grid;
   align-self: stretch;
   width: 100%;
+  cursor: text;
 
   &:empty::before {
     content: attr(placeholder);
@@ -141,6 +143,8 @@
 }
 
 .accordion-card-widget__body-text {
+  cursor: text;
+
   &:empty::before {
     content: attr(placeholder);
     // color: rgba(255, 255, 255, 0.5);

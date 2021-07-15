@@ -15,6 +15,7 @@ import { startCase } from "lodash";
 import { reducer, ConfigReducerAction, AppConfigReducerProps, ConfigType, ConfigOption } from "./AppConfigReducer";
 import { useHistory } from "react-router-dom";
 import { appConfigOptions } from "./AppConfigOptions";
+import { ToggleTheme } from "kaleidoscope/src/global/pieces/Toggle/Toggle";
 
 export const ConfigContext = createContext({} as AppConfigReducerProps);
 
@@ -87,6 +88,7 @@ const AppConfig: FC = ({ children }) => {
                       label={startCase(key)}
                       value={option.value}
                       onChange={(value) => updateValue(key, option, value)}
+                      theme={ToggleTheme.Light}
                     />
                   );
                 }

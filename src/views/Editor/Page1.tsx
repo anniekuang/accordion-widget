@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import Block from "./Block";
 import EditorNavbar from "./EditorNavbar";
 import AccordionCard from "./AccordionCard";
+import KeyboardShortcut from "./KeyboardShortcut";
 import QuickAddMenu from "./QuickAddMenu";
 import { randomString } from "kaleidoscope/src/utils";
 
@@ -96,6 +97,7 @@ class Editor extends React.Component {
               </h1>
               <p>Prepared for Billie Danish</p>
               <p>by Sally Fields — sallyfields@signify.com</p>
+              <KeyboardShortcut>Ctrl</KeyboardShortcut>
               {/* {this.state.accordionWidgets1.map((accordionWidgetItem, index) => (
                 <AccordionCard
                   key={accordionWidgetItem.id}

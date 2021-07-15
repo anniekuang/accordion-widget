@@ -38,7 +38,7 @@ import forceReflow from "kaleidoscope/src/utils/forceReflow";
 import { ConfigContext } from "views/App/AppConfig";
 import { ToggleTheme } from "kaleidoscope/src/global/pieces/Toggle/Toggle";
 import hotkeys from "hotkeys-js";
-import TruncatedText from "kaleidoscope/src/global/pieces/Token/TruncatedText";
+import KeyboardShortcut from "views/Editor/KeyboardShortcut";
 
 interface AccordionWidgetProps {
   id: string;
@@ -134,20 +134,21 @@ class Accordion extends Component<AccordionWidgetProps> {
 
   // Open widget toolbar when selecting widget
   handleWidgetSelected = (event) => {
-    event.stopPropagation();
-    this.setState({
-      widgetSelected: true,
-      headerFocus: false,
-      headerContentSelected: false,
-      headerImageSelected: false,
-      bodyFocus: false,
-      bodyContentSelected: false,
-    });
-    this.widgetElementRef.current.focus();
-    console.log("Select widget");
+    // event.stopPropagation();
+    // this.setState({
+    //   widgetSelected: true,
+    //   headerFocus: false,
+    //   headerContentSelected: false,
+    //   headerImageSelected: false,
+    //   bodyFocus: false,
+    //   bodyContentSelected: false,
+    // });
+    // this.widgetElementRef.current.focus();
+    // console.log("Select widget");
   };
 
   handleWidgetFocus = (event) => {
+    event.stopPropagation();
     if (event.target === this.widgetElementRef.current) {
       this.setState({ widgetSelected: true, headerFocus: false, bodyFocus: false });
     }
@@ -205,8 +206,11 @@ class Accordion extends Component<AccordionWidgetProps> {
   // Close all toolbars when clicking outside of the widget
   handleOuterClick = (event) => {
     if (!this.widgetElementRef.current.contains(event.target)) {
+      console.log("outside");
       this.setState({
         widgetSelected: false,
+        headerFocus: false,
+        bodyFocus: false,
         headerContentSelected: false,
         bodyContentSelected: false,
         headerImageSelected: false,
@@ -222,41 +226,88 @@ class Accordion extends Component<AccordionWidgetProps> {
   handleKeyDown = (event) => {
     var map = {};
 
+    // onkeydown = onkeyup = (event) => {
     map[event.key] = event.type == "keydown";
+    // console.log(map);
 
-    if (map["Shift"] && map["Control"]) {
-      // This doesn't work
-      event.preventDefault();
-      console.log("clone");
+    if ((event.metaKey || event.ctrlKey) && event.shiftKey) {
+      if (map["="]) {
+        // Expand accordion
+        // this.toggleContent();
+        event.preventDefault();
+        this.setState({ bodyOpen: true });
+        console.log("expand");
+      } else if (map["-"]) {
+        // Collapse accordion
+        event.preventDefault();
+        this.setState({
+          bodyOpen: false,
+          bodyEntered: false,
+          // bodyHeight: this.accordionBodyRef.current.offsetHeight,
+        });
+        this.accordionHeaderTextRef.current.focus();
+        console.log(this.state.bodyOpen);
+        console.log("collapse");
+        // } else if (map["c"]) {
+        //   // Clone accordion
+        //   event.preventDefault();
+        //   this.props.addAccordion();
+        //   this.setState({ widgetSelected: false });
+        //   this.accordionHeaderTextRef.current.blur();
+        //   console.log("clone");
+      }
     }
 
-    if (event.metaKey && event.ShiftKey && (map["+"] || map["="] || map["-"])) {
-      // This doesn't work
-      // Expand / collapse accordion
-      event.preventDefault();
-      this.toggleContent();
-      console.log(this.state.bodyOpen);
+    // When accordion widget is selected
+    if (this.state.widgetSelected) {
+      if ((event.metaKey || event.ctrlKey) && event.shiftKey && map["c"]) {
+        // Clone accordion
+        event.preventDefault();
+        this.props.addAccordion();
+        this.setState({ widgetSelected: false });
+        this.accordionHeaderTextRef.current.blur();
+        console.log("clone");
+      }
+      if (map["ArrowDown"]) {
+        console.log("down");
+        event.preventDefault();
+        // this.handleHeaderFocus();
+        this.accordionHeaderTextRef.current.focus();
+        return false;
+      } else if (map["Backspace"] || map["Delete"]) {
+        this.props.removeAccordion();
+      }
     }
 
-    // When focussed in header text area
-    if (this.state.headerFocus) {
+    if (this.state.headerFocus || this.state.bodyFocus) {
       if ((event.metaKey || event.ctrlKey) && map["Enter"]) {
         // Create new empty accordion
         this.props.addAccordion();
         this.setState({ widgetHovering: false });
         this.accordionHeaderTextRef.current.blur();
+        return;
         // } else if ((event.metaKey || event.ctrlKey) && map["e"]) {
         //   // Expand / collapse accordion
         //   event.preventDefault();
         //   this.toggleContent();
         //   console.log(this.state.bodyOpen);
-      } else if (map["Enter"]) {
+      }
+    }
+
+    // When focussed in header text area
+    if (this.state.headerFocus) {
+      // if ((event.metaKey || event.ctrlKey) && map["Enter"]) {
+      //   // Create new empty accordion
+      //   this.props.addAccordion();
+      //   this.setState({ widgetHovering: false });
+      //   this.accordionHeaderTextRef.current.blur();
+      //   return;
+      if (map["Enter"]) {
         // Move typing focus from heading to content
+        console.log("Enter");
         this.setState({ widgetHovering: false });
         this.accordionHeaderTextRef.current.blur();
         this.setState({ bodyOpen: true });
-        // this.handleBodyFocus();
-        // this.accordionBodyTextRef.current.focus();
         setTimeout(() => {
           this.accordionBodyTextRef.current.focus();
         }, 300);
@@ -266,24 +317,23 @@ class Accordion extends Component<AccordionWidgetProps> {
         event.preventDefault();
         this.handleWidgetSelected(event);
         // this.accordionHeaderTextRef.current.blur();
+      } else if (this.state.bodyOpen && map["ArrowDown"]) {
+        event.preventDefault();
+        this.accordionBodyTextRef.current.focus();
       } else {
         // Hide widget selection border when user starts typing
         this.setState({ widgetHovering: false });
-        console.log("typing");
+        // console.log("typing");
       }
     }
 
-    // When accordion widget is selected
-    if (this.state.widgetSelected) {
-      if (map["ArrowDown"]) {
-        console.log("down");
+    if (this.state.bodyFocus) {
+      if (map["ArrowUp"]) {
         event.preventDefault();
-        // this.handleHeaderFocus();
         this.accordionHeaderTextRef.current.focus();
-      } else if (map["Backspace"] || map["Delete"]) {
-        this.props.removeAccordion();
       }
     }
+    // };
   };
 
   // handleKeyDown = (event) => {
@@ -442,6 +492,11 @@ class Accordion extends Component<AccordionWidgetProps> {
     //   return headerHeight;
     // }
     const {
+      widgetSelected,
+      headerFocus,
+      bodyFocus,
+      headerHTML,
+      bodyHTML,
       bodyOpen,
       cardStyle,
       buttonAlignment,
@@ -457,7 +512,24 @@ class Accordion extends Component<AccordionWidgetProps> {
       <>
         {/* Widget toolbar - START */}
         <Toolbar visible={this.state.widgetSelected} element={this.widgetElementRef.current}>
-          <ToolbarButton icon={<Copy />} onClick={this.props.cloneAccordion} />
+          <ToolbarButton
+            icon={<Copy />}
+            tooltip={{
+              content: (
+                <>
+                  <span>Clone </span>
+                  <KeyboardShortcut>⌘</KeyboardShortcut>
+                  <KeyboardShortcut>⇧</KeyboardShortcut>
+                  <KeyboardShortcut>C</KeyboardShortcut>
+                </>
+              ),
+            }}
+            onClick={() => {
+              this.props.addAccordion();
+              this.setState({ widgetSelected: false });
+              this.accordionHeaderTextRef.current.blur();
+            }}
+          />
 
           <Popover
             offset={8}
@@ -765,7 +837,48 @@ class Accordion extends Component<AccordionWidgetProps> {
                         <MarkerArrowRight style={{ color: cardStyle === "visual" ? "white" : "inherit" }} />
                       )
                     }
-                    tooltip={bodyOpen ? { content: "Collapse (Cmd + E)" } : { content: "Expand (Cmd + E)" }}
+                    tooltip={
+                      bodyOpen
+                        ? {
+                            content: (
+                              // widgetSelected || headerFocus || bodyFocus ? (
+                              //   <>
+                              //     <span>Collapse</span>
+                              //     <KeyboardShortcut>⌘</KeyboardShortcut>
+                              //     <KeyboardShortcut>Shift</KeyboardShortcut>
+                              //     <KeyboardShortcut>-</KeyboardShortcut>
+                              //   </>
+                              // ) : (
+                              //   "Collapse"
+                              // ),
+                              <>
+                                <span>Collapse </span>
+                                <KeyboardShortcut>⌘</KeyboardShortcut>
+                                <KeyboardShortcut>⇧</KeyboardShortcut>
+                                <KeyboardShortcut>–</KeyboardShortcut>
+                              </>
+                            ),
+                          }
+                        : {
+                            content: (
+                              // widgetSelected || headerFocus || bodyFocus ? (
+                              //   <>
+                              //     <span>Expand</span>
+                              //     <KeyboardShortcut>⌘</KeyboardShortcut>
+                              //     <KeyboardShortcut>Shift</KeyboardShortcut>
+                              //     <KeyboardShortcut>+</KeyboardShortcut>
+                              //   </>
+                              // ) : (
+                              //   "Expand"
+                              <>
+                                <span>Expand </span>
+                                <KeyboardShortcut>⌘</KeyboardShortcut>
+                                <KeyboardShortcut>⇧</KeyboardShortcut>
+                                <KeyboardShortcut>+</KeyboardShortcut>
+                              </>
+                            ),
+                          }
+                    }
                     aria-label={"Toggle"}
                     onClick={this.toggleContent}
                     // tabIndex={-1}
@@ -783,7 +896,7 @@ class Accordion extends Component<AccordionWidgetProps> {
                 id={"accordion-header"}
                 innerRef={this.accordionHeaderTextRef}
                 placeholder="Add a heading"
-                html={this.state.headerHTML}
+                html={headerHTML}
                 onChange={this.handleHeaderChange}
                 onKeyDown={this.handleKeyDown}
                 onPaste={this.pasteAsPlainText}
@@ -852,7 +965,7 @@ class Accordion extends Component<AccordionWidgetProps> {
                   className="accordion-card-widget__body-text"
                   innerRef={this.accordionBodyTextRef}
                   placeholder="Add content here, or press Cmd + Enter for a new item"
-                  html={this.state.bodyHTML}
+                  html={bodyHTML}
                   onChange={this.handleBodyChange}
                   onKeyDown={this.handleKeyDown}
                   onPaste={this.pasteAsPlainText}
