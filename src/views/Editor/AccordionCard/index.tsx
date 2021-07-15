@@ -134,16 +134,16 @@ class Accordion extends Component<AccordionWidgetProps> {
 
   // Open widget toolbar when selecting widget
   handleWidgetSelected = (event) => {
-    // event.stopPropagation();
-    // this.setState({
-    //   widgetSelected: true,
-    //   headerFocus: false,
-    //   headerContentSelected: false,
-    //   headerImageSelected: false,
-    //   bodyFocus: false,
-    //   bodyContentSelected: false,
-    // });
-    // this.widgetElementRef.current.focus();
+    event.stopPropagation();
+    this.setState({
+      widgetSelected: true,
+      headerFocus: false,
+      headerContentSelected: false,
+      headerImageSelected: false,
+      bodyFocus: false,
+      bodyContentSelected: false,
+    });
+    this.widgetElementRef.current.focus();
     // console.log("Select widget");
   };
 
@@ -206,7 +206,7 @@ class Accordion extends Component<AccordionWidgetProps> {
   // Close all toolbars when clicking outside of the widget
   handleOuterClick = (event) => {
     if (!this.widgetElementRef.current.contains(event.target)) {
-      console.log("outside");
+      // console.log("outside");
       this.setState({
         widgetSelected: false,
         headerFocus: false,
