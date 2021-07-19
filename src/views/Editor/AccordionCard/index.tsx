@@ -291,6 +291,14 @@ class Accordion extends Component<AccordionWidgetProps> {
         //   event.preventDefault();
         //   this.toggleContent();
         //   console.log(this.state.bodyOpen);
+      } else if (map["Escape"]) {
+        // Exit content focus of widget and select widget
+        // If the purpose of this is to quick-escape to navigate away,
+        // This clashes with the down arrow key interaction when the widget is selected (i.e. move focus into accordion heading)
+        // Feels like a frustrating loop
+        this.accordionHeaderTextRef.current.blur();
+        this.accordionBodyTextRef.current.blur();
+        this.handleWidgetSelected(event);
       }
     }
 

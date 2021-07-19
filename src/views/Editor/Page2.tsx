@@ -121,16 +121,18 @@ class Editor extends React.Component {
               headerText="Housekeeping"
               bodyText="To ensure that emails are getting into your subscriber’s inboxes, we’ll look into cleaning up your existing database. In addition, we’ll work on laying down some basic standard operating procedures to ensure that your emails are whitelisted and delivered properly to your recipients, such as setting up a double opt-in process and setting up a Welcome email workflow to ensure that your clients have all the information they need to add your emails into their address book."
             />
-            <AccordionCard
-              key="accordion-1"
-              id="accordion-1"
-              addAccordion={() => null}
-              removeAccordion={() => this.removeAccordion2("accordion-1")}
-              headerText="Content Creation"
-              bodyText="Working with you and your team, we’ll come up with guidelines on when and how often you should send emails by coming up with a category of email types that you will be sending. From offers, to sharing updates and sending an e-newsletter, we will help you to match this with the different lists that you have created to ensure that your emails reach the right people at the right time.
+            {this.state.accordionWidgets1.map((accordionWidgetItem, index) => (
+              <AccordionCard
+                key={accordionWidgetItem.id}
+                id={accordionWidgetItem.id}
+                addAccordion={() => this.addAccordion1(index)}
+                removeAccordion={() => this.removeAccordion1(accordionWidgetItem.id)}
+                headerText="Content Creation"
+                bodyText="Working with you and your team, we’ll come up with guidelines on when and how often you should send emails by coming up with a category of email types that you will be sending. From offers, to sharing updates and sending an e-newsletter, we will help you to match this with the different lists that you have created to ensure that your emails reach the right people at the right time.
 
               In addition, we will also conduct a 3 day training course on creating content for emails outlining industry best practices like how to improve your subject lines and email copy to increase open rates and click-through rates."
-            />
+              />
+            ))}
             {this.state.accordionWidgets2.map((accordionWidgetItem, index) => (
               <AccordionCard
                 key={accordionWidgetItem.id}
