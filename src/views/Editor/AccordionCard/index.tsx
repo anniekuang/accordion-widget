@@ -4,10 +4,13 @@ import {
   ButtonType,
   ColorPalette,
   IconButton,
+  OptionMenu,
+  OptionMenuItem,
   Popover,
   PopoverTheme,
   SegmentedControl,
   SegmentedControlTheme,
+  SliderInput,
   TextInput,
   TextInputTheme,
   Toggle,
@@ -75,6 +78,7 @@ class Accordion extends Component<AccordionWidgetProps> {
     headerImageURL:
       "https://images.unsplash.com/photo-1617032869717-206e809076a3?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1489&q=80",
     headerImageTintColor: "rgba(0,0,0,0) 0%, #000000 100%",
+    imageHeight: "132px",
     headerColorVisible: true,
     headerColor: "transparent",
     selectedHeaderColorValue: 1,
@@ -230,14 +234,14 @@ class Accordion extends Component<AccordionWidgetProps> {
     map[event.key] = event.type == "keydown";
     // console.log(map);
 
-    if ((event.metaKey || event.ctrlKey) && event.shiftKey) {
+    if (event.ctrlKey && event.shiftKey) {
       if (map["="]) {
         // Expand accordion
         // this.toggleContent();
         event.preventDefault();
         this.setState({ bodyOpen: true });
         console.log("expand");
-      } else if (map["-"]) {
+      } else if (map["-"] || map["_"]) {
         // Collapse accordion
         event.preventDefault();
         this.setState({
@@ -246,8 +250,8 @@ class Accordion extends Component<AccordionWidgetProps> {
           // bodyHeight: this.accordionBodyRef.current.offsetHeight,
         });
         this.accordionHeaderTextRef.current.focus();
-        console.log(this.state.bodyOpen);
-        console.log("collapse");
+        // console.log(this.state.bodyOpen);
+        // console.log("collapse");
         // } else if (map["c"]) {
         //   // Clone accordion
         //   event.preventDefault();
@@ -419,6 +423,10 @@ class Accordion extends Component<AccordionWidgetProps> {
     }
   };
 
+  setImageHeight = (optionValue) => {
+    this.setState({ imageHeight: optionValue });
+  };
+
   toggleContent = () => {
     if (this.state.bodyOpen === false) {
       this.setState({ bodyOpen: true });
@@ -510,6 +518,7 @@ class Accordion extends Component<AccordionWidgetProps> {
       buttonAlignment,
       headerImageURL,
       headerImageTintColor,
+      imageHeight,
       headerColorVisible,
       headerColor,
       bodyBackgroundColorVisible,
@@ -538,7 +547,24 @@ class Accordion extends Component<AccordionWidgetProps> {
               this.accordionHeaderTextRef.current.blur();
             }}
           />
-
+          {this.context.imageButtonType === "Toolbar" && cardStyle === "visual" && (
+            <OptionMenu button={<ToolbarButton icon={<Images />} tooltip={{ content: "Background image" }} />}>
+              <OptionMenuItem>Swap image</OptionMenuItem>
+              <OptionMenuItem>Reposition</OptionMenuItem>
+              {/* <OptionMenuItem
+                onClick={() => {
+                  this.setState({
+                    cardStyle: "simple",
+                    headerImageEntered: false,
+                    buttonAlignment: "left",
+                    bodyBackgroundColor: `rgba(${this.state.headerColor}, 0.1)`,
+                  });
+                }}
+              >
+                Remove
+              </OptionMenuItem> */}
+            </OptionMenu>
+          )}
           <Popover
             offset={8}
             theme={PopoverTheme.Dark}
@@ -554,6 +580,45 @@ class Accordion extends Component<AccordionWidgetProps> {
               onClickHandler={this.setCardStyle}
               theme={SegmentedControlTheme.Dark}
             />
+            {cardStyle === "visual" && (
+              <>
+                <SegmentedControl
+                  label="Image height"
+                  options={[
+                    { label: "S", value: "72px" },
+                    { label: "M", value: "132px" },
+                    { label: "L", value: "192px" },
+                  ]}
+                  selectedValue={imageHeight}
+                  onClickHandler={this.setImageHeight}
+                  theme={SegmentedControlTheme.Dark}
+                />
+                <ColorPalette
+                  presetColors={[
+                    {
+                      value: "#00A99D",
+                      themeIndex: 1,
+                    },
+                    {
+                      value: "#FFCE53",
+                      themeIndex: 2,
+                    },
+                    {
+                      value: "rgba(129, 162, 178,0.1)",
+                      themeIndex: 3,
+                    },
+                  ]}
+                  handleColorChange={(color) => {}}
+                  selectedThemeIndex={3}
+                ></ColorPalette>
+                <SliderInput
+                  initialInputValue={25}
+                  label={"Tint opacity"}
+                  handleValueChange={(value) => {}}
+                  unit={"%"}
+                />
+              </>
+            )}
             {/* <div>
               <Toggle
                 value={headerColorVisible}
@@ -651,25 +716,6 @@ class Accordion extends Component<AccordionWidgetProps> {
         </Toolbar>
         {/* Widget Toolbar - END */}
 
-        {/* Image Toolbar - START */}
-        {this.context.imageButtonType === "Toolbar" && (
-          <Toolbar visible={this.state.headerImageSelected} element={this.accordionHeaderRef.current}>
-            <Popover
-              offset={8}
-              theme={PopoverTheme.Dark}
-              button={(buttonProps) => <ToolbarButton icon={<Images />} {...buttonProps} />}
-            >
-              <TextInput
-                label="Background image URL"
-                theme={TextInputTheme.Dark}
-                value={headerImageURL}
-                onChange={(value) => this.setState({ headerImageURL: value })}
-              />
-            </Popover>
-          </Toolbar>
-        )}
-        {/* Image Toolbar - END */}
-
         {/* Header Text Toolbar - START */}
         <Toolbar visible={this.state.headerContentSelected} element={this.accordionHeaderTextRef.current}>
           <ToolbarButton
@@ -764,6 +810,7 @@ class Accordion extends Component<AccordionWidgetProps> {
                     className="accordion-card-widget__header-image-controls"
                     ref={this.accordionHeaderImageControls}
                     onClick={this.handleImageSelected}
+                    style={{ height: imageHeight }}
                   >
                     {this.context.imageButtonType === "Text" && (
                       <Popover
@@ -795,8 +842,8 @@ class Accordion extends Component<AccordionWidgetProps> {
                         button={(buttonProps) => (
                           <IconButton
                             className="accordion-card-widget__header-image-icon-button"
-                            icon={<Images />}
-                            type={ButtonType.Secondary}
+                            icon={<Images style={{ color: "white" }} />}
+                            type={ButtonType.Tertiary}
                             size={ButtonSize.Small}
                             tooltip={{ content: "Swap image" }}
                             {...buttonProps}
@@ -861,7 +908,7 @@ class Accordion extends Component<AccordionWidgetProps> {
                               // ),
                               <>
                                 <span>Collapse </span>
-                                <KeyboardShortcut>⌘</KeyboardShortcut>
+                                <KeyboardShortcut>⌃</KeyboardShortcut>
                                 <KeyboardShortcut>⇧</KeyboardShortcut>
                                 <KeyboardShortcut>–</KeyboardShortcut>
                               </>
@@ -880,7 +927,7 @@ class Accordion extends Component<AccordionWidgetProps> {
                               //   "Expand"
                               <>
                                 <span>Expand </span>
-                                <KeyboardShortcut>⌘</KeyboardShortcut>
+                                <KeyboardShortcut>⌃</KeyboardShortcut>
                                 <KeyboardShortcut>⇧</KeyboardShortcut>
                                 <KeyboardShortcut>+</KeyboardShortcut>
                               </>

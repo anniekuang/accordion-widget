@@ -22,8 +22,18 @@ export const appConfigOptions = {
   // },
   imageButtonType: {
     type: ConfigType.SegmentedControl,
-    value: "Text",
+    value: "Icon",
     options: ["Text", "Icon", "Toolbar"],
+  },
+  imageButtonSize: {
+    type: ConfigType.SegmentedControl,
+    value: "Medium",
+    options: ["Small", "Medium"],
+  },
+  imageButtonStyle: {
+    type: ConfigType.SegmentedControl,
+    value: "Secondary",
+    options: ["Secondary", "Tertiary"],
   },
   newAccordionIs: {
     type: ConfigType.SegmentedControl,
